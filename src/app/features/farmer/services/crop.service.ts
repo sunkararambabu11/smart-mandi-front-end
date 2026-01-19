@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, tap, catchError, throwError, of, delay } from 'rxjs';
+import { HttpClient, HttpEventType } from '@angular/common/http';
+import { Observable, tap, catchError, throwError, of, delay, forkJoin, map, switchMap } from 'rxjs';
 import { environment } from '@environments/environment';
 
 /**
@@ -73,9 +73,11 @@ export interface CreateCropDto {
  * Image Upload Response
  */
 export interface ImageUploadResponse {
+  readonly message: string;
   readonly url: string;
-  readonly thumbnailUrl: string;
   readonly publicId: string;
+  readonly type: 'IMAGE' | 'VIDEO' | 'DOCUMENT';
+  readonly thumbnailUrl?: string;
 }
 
 /**
@@ -254,37 +256,60 @@ export class CropService {
   }
 
   /**
-   * Upload image
+   * Upload image to media server
+   * Uses endpoint: /uploads/product-media
    */
   uploadImage(file: File): Observable<ImageUploadResponse> {
     this.updateState({ uploadProgress: 0 });
 
-    if (!environment.production) {
-      // Simulate upload in development
-      return of({
-        url: URL.createObjectURL(file),
-        thumbnailUrl: URL.createObjectURL(file),
-        publicId: `mock_${Date.now()}`,
-      }).pipe(
-        delay(1000),
-        tap(() => this.updateState({ uploadProgress: 100 }))
-      );
-    }
-
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('file', file, file.name);
 
     return this.http
-      .post<ImageUploadResponse>(`${this.apiUrl}/upload-image`, formData, {
+      .post<any>(`${environment.apiUrl}/uploads/product-media`, formData, {
         reportProgress: true,
+        observe: 'events',
       })
       .pipe(
-        tap(() => this.updateState({ uploadProgress: 100 })),
+        tap((event) => {
+          if (event.type === HttpEventType.UploadProgress && event.total) {
+            const progress = Math.round((100 * event.loaded) / event.total);
+            this.updateState({ uploadProgress: progress });
+          }
+        }),
+        map((event) => {
+          if (event.type === HttpEventType.Response) {
+            this.updateState({ uploadProgress: 100 });
+            const body = event.body as ImageUploadResponse;
+            return {
+              message: body.message,
+              url: body.url,
+              publicId: body.publicId,
+              type: body.type,
+              thumbnailUrl: body.thumbnailUrl || body.url,
+            } as ImageUploadResponse;
+          }
+          return null as unknown as ImageUploadResponse;
+        }),
         catchError((error) => {
           this.updateState({ uploadProgress: 0, error: 'Image upload failed' });
           return throwError(() => error);
         })
       );
+  }
+
+  /**
+   * Upload multiple images
+   */
+  uploadImages(files: File[]): Observable<ImageUploadResponse[]> {
+    if (files.length === 0) {
+      return of([]);
+    }
+
+    const uploads = files.map(file => this.uploadImage(file));
+    return forkJoin(uploads).pipe(
+      map(responses => responses.filter(r => r !== null))
+    );
   }
 
   /**

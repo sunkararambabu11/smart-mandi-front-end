@@ -59,16 +59,25 @@ function isPublicEndpoint(url: string): boolean {
 
 /**
  * Add Bearer token to request headers
+ * Note: For FormData requests, we don't set Content-Type to let the browser
+ * set it automatically with the proper boundary.
  */
 function addTokenToRequest(
   req: HttpRequest<unknown>,
   token: string
 ): HttpRequest<unknown> {
+  const isFormData = req.body instanceof FormData;
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  // Only set Content-Type if it's not FormData and not already set
+  if (!isFormData && !req.headers.has('Content-Type')) {
+    headers['Content-Type'] = 'application/json';
+  }
+
   return req.clone({
-    setHeaders: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': req.headers.get('Content-Type') || 'application/json',
-    },
+    setHeaders: headers,
   });
 }
 
