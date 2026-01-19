@@ -1,0 +1,195 @@
+<div class="profile-page">
+  <!-- Header Section -->
+  <section class="profile-header">
+    <div class="header-bg"></div>
+    <div class="header-content">
+      <!-- Avatar -->
+      <div class="avatar-section">
+        <div class="avatar">
+          @if (authService.avatarUrl()) {
+            <img [src]="authService.avatarUrl()" [alt]="authService.displayName()" />
+          } @else {
+            <span class="avatar-initial">
+              {{ authService.displayName().charAt(0).toUpperCase() }}
+            </span>
+          }
+          <button class="avatar-edit" mat-icon-button aria-label="Change avatar">
+            <mat-icon>camera_alt</mat-icon>
+          </button>
+        </div>
+        
+        <!-- Verification Badge -->
+        @if (authService.currentUser()?.phoneVerified) {
+          <mat-chip class="verified-badge">
+            <mat-icon>verified</mat-icon>
+            Verified
+          </mat-chip>
+        }
+      </div>
+
+      <!-- User Info -->
+      <div class="user-info">
+        <h1 class="user-name">{{ authService.displayName() }}</h1>
+        <p class="user-role">
+          <mat-icon>{{ authService.isFarmer() ? 'agriculture' : 'shopping_bag' }}</mat-icon>
+          {{ authService.userRole() | titlecase }}
+        </p>
+        <p class="member-since">
+          <mat-icon>calendar_today</mat-icon>
+          Member since {{ authService.currentUser()?.createdAt | date:'MMMM yyyy' }}
+        </p>
+      </div>
+
+      <!-- Edit Button -->
+      <a routerLink="/profile/edit" mat-stroked-button class="edit-btn">
+        <mat-icon>edit</mat-icon>
+        Edit Profile
+      </a>
+    </div>
+  </section>
+
+  <!-- Profile Completion -->
+  @if (profileCompletion < 100) {
+    <mat-card class="completion-card">
+      <div class="completion-header">
+        <div>
+          <h3>Complete Your Profile</h3>
+          <p>A complete profile helps build trust with buyers</p>
+        </div>
+        <span class="completion-percent">{{ profileCompletion }}%</span>
+      </div>
+      <mat-progress-bar 
+        mode="determinate" 
+        [value]="profileCompletion"
+        color="primary">
+      </mat-progress-bar>
+      <div class="completion-tips">
+        <span><mat-icon>lightbulb</mat-icon> Add a profile photo to increase visibility</span>
+      </div>
+    </mat-card>
+  }
+
+  <!-- Stats Grid -->
+  <section class="stats-section">
+    <mat-card class="stat-card">
+      <mat-icon class="stat-icon orders">shopping_bag</mat-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats().totalOrders }}</span>
+        <span class="stat-label">Total Orders</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon class="stat-icon listings">inventory_2</mat-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats().activeListings }}</span>
+        <span class="stat-label">Active Listings</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon class="stat-icon earnings">account_balance_wallet</mat-icon>
+      <div class="stat-content">
+        <span class="stat-value">₹{{ stats().totalEarnings | number }}</span>
+        <span class="stat-label">Total Earnings</span>
+      </div>
+    </mat-card>
+
+    <mat-card class="stat-card">
+      <mat-icon class="stat-icon rating">star</mat-icon>
+      <div class="stat-content">
+        <span class="stat-value">{{ stats().rating }}</span>
+        <span class="stat-label">{{ stats().reviewsCount }} Reviews</span>
+      </div>
+    </mat-card>
+  </section>
+
+  <!-- Personal Information -->
+  <mat-card class="info-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>person</mat-icon>
+      <mat-card-title>Personal Information</mat-card-title>
+      <mat-card-subtitle>Your account details</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="info-grid">
+        <div class="info-item">
+          <mat-icon>person</mat-icon>
+          <div>
+            <label>Full Name</label>
+            <span>{{ authService.displayName() }}</span>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <mat-icon>email</mat-icon>
+          <div>
+            <label>Email</label>
+            <span>{{ authService.currentUser()?.email || 'Not provided' }}</span>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <mat-icon>phone</mat-icon>
+          <div>
+            <label>Phone</label>
+            <span>{{ authService.currentUser()?.profile?.phoneNumber || 'Not provided' }}</span>
+          </div>
+        </div>
+        
+        <div class="info-item">
+          <mat-icon>location_on</mat-icon>
+          <div>
+            <label>Location</label>
+            <span>{{ authService.currentUser()?.profile?.location?.address || 'Not provided' }}</span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <a routerLink="/profile/edit" mat-button color="primary">
+        <mat-icon>edit</mat-icon>
+        Edit Information
+      </a>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- Quick Actions -->
+  <section class="quick-actions">
+    <h2 class="section-title">Quick Actions</h2>
+    <div class="actions-grid">
+      @for (action of quickActions; track action.route) {
+        <a [routerLink]="action.route" class="action-card" [attr.data-color]="action.color">
+          <mat-icon>{{ action.icon }}</mat-icon>
+          <span>{{ action.label }}</span>
+          <mat-icon class="arrow">chevron_right</mat-icon>
+        </a>
+      }
+    </div>
+  </section>
+
+  <!-- Account Actions -->
+  <mat-card class="danger-zone">
+    <mat-card-header>
+      <mat-icon mat-card-avatar class="danger-icon">warning</mat-icon>
+      <mat-card-title>Account Actions</mat-card-title>
+      <mat-card-subtitle>Manage your account status</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="danger-actions">
+        <button mat-stroked-button color="warn">
+          <mat-icon>pause_circle</mat-icon>
+          Deactivate Account
+        </button>
+        <button mat-stroked-button color="warn">
+          <mat-icon>delete_forever</mat-icon>
+          Delete Account
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+

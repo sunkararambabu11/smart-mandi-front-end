@@ -1,0 +1,140 @@
+<mat-card
+  class="crop-card"
+  [class.compact]="compact()"
+  [attr.data-status]="crop().status"
+  matRipple
+  (click)="onView()"
+>
+  <!-- Image Section -->
+  <div class="card-image">
+    <img [src]="getImageUrl()" [alt]="crop().cropName" loading="lazy" />
+
+    <!-- Status Badge -->
+    <div class="status-badge" [attr.data-status]="crop().status">
+      <mat-icon>{{ getStatusConfig(crop().status).icon }}</mat-icon>
+      <span>{{ getStatusConfig(crop().status).label }}</span>
+    </div>
+
+    <!-- Organic Badge -->
+    @if (crop().isOrganic) {
+      <div class="organic-badge" matTooltip="Organic Certified">
+        <mat-icon>eco</mat-icon>
+      </div>
+    }
+
+    <!-- Image Count -->
+    @if (crop().images && crop().images.length > 1) {
+      <div class="image-count">
+        <mat-icon>photo_library</mat-icon>
+        <span>{{ crop().images.length }}</span>
+      </div>
+    }
+  </div>
+
+  <!-- Content Section -->
+  <mat-card-content class="card-content">
+    <!-- Title & Category -->
+    <div class="card-header">
+      <h3 class="crop-name">{{ crop().cropName }}</h3>
+      <span class="crop-category">{{ crop().category }}</span>
+    </div>
+
+    <!-- Quality Grade -->
+    <div class="quality-badge" [attr.data-grade]="crop().qualityGrade">
+      {{ getQualityLabel(crop().qualityGrade) }}
+    </div>
+
+    <!-- Details Grid -->
+    <div class="details-grid">
+      <!-- Quantity -->
+      <div class="detail-item">
+        <mat-icon>scale</mat-icon>
+        <div class="detail-content">
+          <span class="detail-value">{{ crop().quantity }} {{ crop().unit }}</span>
+          <span class="detail-label">Available</span>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="detail-item">
+        <mat-icon>payments</mat-icon>
+        <div class="detail-content">
+          <span class="detail-value price">₹{{ crop().expectedPrice }}/{{ crop().unit }}</span>
+          <span class="detail-label">Expected</span>
+        </div>
+      </div>
+
+      <!-- Harvest Date -->
+      <div class="detail-item">
+        <mat-icon>event</mat-icon>
+        <div class="detail-content">
+          <span class="detail-value">{{ crop().harvestDate | date : 'mediumDate' }}</span>
+          <span class="detail-label">Harvest</span>
+        </div>
+      </div>
+
+      <!-- Total Value -->
+      <div class="detail-item">
+        <mat-icon>account_balance_wallet</mat-icon>
+        <div class="detail-content">
+          <span class="detail-value total">
+            {{ formatPrice(crop().quantity * crop().expectedPrice) }}
+          </span>
+          <span class="detail-label">Total Value</span>
+        </div>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <!-- Actions Section -->
+  <mat-card-actions class="card-actions">
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="onView(); $event.stopPropagation()"
+    >
+      <mat-icon>visibility</mat-icon>
+      View
+    </button>
+
+    @if (isEditable()) {
+      <button
+        mat-stroked-button
+        (click)="onEdit(); $event.stopPropagation()"
+      >
+        <mat-icon>edit</mat-icon>
+        Edit
+      </button>
+    }
+
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="moreMenu"
+      (click)="$event.stopPropagation()"
+      matTooltip="More actions"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #moreMenu="matMenu">
+      <button mat-menu-item (click)="onDuplicate()">
+        <mat-icon>content_copy</mat-icon>
+        <span>Duplicate</span>
+      </button>
+      @if (canMarkAsSold()) {
+        <button mat-menu-item (click)="onMarkAsSold()">
+          <mat-icon>sell</mat-icon>
+          <span>Mark as Sold</span>
+        </button>
+      }
+      <mat-divider></mat-divider>
+      <button mat-menu-item class="delete-action" (click)="onDelete()">
+        <mat-icon>delete</mat-icon>
+        <span>Delete</span>
+      </button>
+    </mat-menu>
+  </mat-card-actions>
+</mat-card>
+
+
+

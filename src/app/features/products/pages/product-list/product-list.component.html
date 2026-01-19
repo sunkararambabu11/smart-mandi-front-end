@@ -1,0 +1,176 @@
+<div class="product-list-page">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1>My Products</h1>
+      <p>Manage your product listings</p>
+    </div>
+    @if (isFarmer()) {
+      <a routerLink="/products/add" mat-raised-button color="primary">
+        <mat-icon>add</mat-icon>
+        Add Product
+      </a>
+    }
+  </header>
+
+  <!-- Stats Cards -->
+  <section class="stats-grid">
+    <mat-card class="stat-card">
+      <mat-icon class="stat-icon total">inventory_2</mat-icon>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats().total }}</span>
+        <span class="stat-label">Total Products</span>
+      </div>
+    </mat-card>
+    
+    <mat-card class="stat-card">
+      <mat-icon class="stat-icon active">check_circle</mat-icon>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats().active }}</span>
+        <span class="stat-label">Active</span>
+      </div>
+    </mat-card>
+    
+    <mat-card class="stat-card">
+      <mat-icon class="stat-icon drafts">edit_note</mat-icon>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats().drafts }}</span>
+        <span class="stat-label">Drafts</span>
+      </div>
+    </mat-card>
+    
+    <mat-card class="stat-card">
+      <mat-icon class="stat-icon sold">sell</mat-icon>
+      <div class="stat-info">
+        <span class="stat-value">{{ stats().sold }}</span>
+        <span class="stat-label">Sold Out</span>
+      </div>
+    </mat-card>
+  </section>
+
+  <!-- Tabs -->
+  <mat-card class="products-card">
+    <div class="tabs-header">
+      @for (tab of tabs; track tab.value; let i = $index) {
+        <button 
+          class="tab-btn"
+          [class.active]="selectedTab() === i"
+          (click)="onTabChange(i)">
+          <mat-icon>{{ tab.icon }}</mat-icon>
+          {{ tab.label }}
+        </button>
+      }
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="loading-state">
+        <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+        <p>Loading products...</p>
+      </div>
+    } @else if (filteredProducts.length === 0) {
+      <!-- Empty State -->
+      <div class="empty-state">
+        <div class="empty-icon">
+          <mat-icon>inventory_2</mat-icon>
+        </div>
+        <h2>No Products Found</h2>
+        <p>
+          @switch (tabs[selectedTab()].value) {
+            @case ('active') { You don't have any active products }
+            @case ('draft') { No drafts saved }
+            @case ('sold') { No products sold yet }
+            @default { Start selling by adding your first product }
+          }
+        </p>
+        @if (isFarmer()) {
+          <a routerLink="/products/add" mat-raised-button color="primary">
+            <mat-icon>add</mat-icon>
+            Add Your First Product
+          </a>
+        }
+      </div>
+    } @else {
+      <!-- Products Grid -->
+      <div class="products-grid">
+        @for (product of filteredProducts; track trackByProductId($index, product)) {
+          <div class="product-card">
+            <!-- Product Image -->
+            <div class="product-image">
+              @if (product.imageUrl) {
+                <img [src]="product.imageUrl" [alt]="product.name" loading="lazy" />
+              } @else {
+                <div class="image-placeholder">
+                  <mat-icon>eco</mat-icon>
+                </div>
+              }
+              
+              <!-- Badges -->
+              <div class="image-badges">
+                @if (product.isOrganic) {
+                  <span class="organic-badge">
+                    <mat-icon>eco</mat-icon> Organic
+                  </span>
+                }
+              </div>
+
+              <!-- Status Badge -->
+              <span class="status-badge" [class]="product.status">
+                {{ product.status | titlecase }}
+              </span>
+            </div>
+
+            <!-- Product Info -->
+            <div class="product-info">
+              <span class="category">{{ product.category }}</span>
+              <h3 class="product-name">{{ product.name }}</h3>
+              
+              <div class="product-meta">
+                <span class="price">₹{{ product.price }}/{{ product.unit }}</span>
+                <span class="quantity">{{ product.quantity }} {{ product.unit }} available</span>
+              </div>
+
+              <div class="product-stats">
+                <span><mat-icon>visibility</mat-icon> {{ product.viewCount }}</span>
+                <span><mat-icon>gavel</mat-icon> {{ product.bidCount }} bids</span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="product-actions">
+              <a [routerLink]="['/products', product.id]" mat-stroked-button>
+                <mat-icon>visibility</mat-icon>
+                View
+              </a>
+              <a [routerLink]="['/products', product.id, 'edit']" mat-stroked-button color="primary">
+                <mat-icon>edit</mat-icon>
+                Edit
+              </a>
+              <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="More actions">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              
+              <mat-menu #menu="matMenu">
+                @if (product.status !== 'sold') {
+                  <button mat-menu-item (click)="onToggleStatus(product)">
+                    <mat-icon>{{ product.status === 'active' ? 'pause' : 'play_arrow' }}</mat-icon>
+                    <span>{{ product.status === 'active' ? 'Deactivate' : 'Activate' }}</span>
+                  </button>
+                }
+                <button mat-menu-item>
+                  <mat-icon>content_copy</mat-icon>
+                  <span>Duplicate</span>
+                </button>
+                <button mat-menu-item class="delete-action" (click)="onDeleteProduct(product)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button>
+              </mat-menu>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </mat-card>
+</div>
+

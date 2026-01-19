@@ -1,0 +1,23 @@
+.order-details-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+  
+  p {
+    color: var(--smc-text-secondary);
+  }
+}
+
+.order-card {
+  border-radius: 1rem !important;
+}
+

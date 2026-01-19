@@ -1,0 +1,108 @@
+<!-- Notifications Page -->
+<div class="notifications-page">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>Notifications</h1>
+        @if (unreadCount() > 0) {
+          <span class="unread-badge">{{ unreadCount() }} unread</span>
+        }
+      </div>
+
+      <div class="header-actions">
+        @if (hasUnread()) {
+          <button mat-stroked-button (click)="onMarkAllAsRead()" [disabled]="isUpdating()">
+            <mat-icon>done_all</mat-icon>
+            Mark all as read
+          </button>
+        }
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #moreMenu="matMenu">
+          <button mat-menu-item (click)="onClearAll()" [disabled]="notifications().length === 0">
+            <mat-icon>delete_sweep</mat-icon>
+            Clear all notifications
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+
+    <!-- Filter Chips -->
+    <div class="filter-chips">
+      @for (option of filterOptions; track option.value) {
+        <button
+          class="filter-chip"
+          [class.active]="filterType() === option.value"
+          (click)="onFilterChange(option.value)"
+        >
+          <mat-icon>{{ option.icon }}</mat-icon>
+          <span>{{ option.label }}</span>
+          @if (option.value !== 'all') {
+            @if (getUnreadCountForType($any(option.value)) > 0) {
+              <span class="chip-badge">{{ getUnreadCountForType($any(option.value)) }}</span>
+            }
+          } @else if (unreadCount() > 0) {
+            <span class="chip-badge">{{ unreadCount() }}</span>
+          }
+        </button>
+      }
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="notifications-content">
+    @if (isLoading()) {
+      <!-- Loading State -->
+      <div class="loading-container">
+        <mat-spinner diameter="48"></mat-spinner>
+        <p>Loading notifications...</p>
+      </div>
+    } @else if (filteredNotifications().length === 0) {
+      <!-- Empty State -->
+      <div class="empty-state">
+        @if (filterType() === 'all') {
+          <mat-icon>notifications_off</mat-icon>
+          <h3>No notifications</h3>
+          <p>You're all caught up! New notifications will appear here.</p>
+        } @else {
+          <mat-icon>{{ getFilterTypeConfig().icon }}</mat-icon>
+          <h3>No {{ getFilterTypeConfig().label.toLowerCase() }} notifications</h3>
+          <p>Notifications of this type will appear here.</p>
+          <button mat-stroked-button (click)="onFilterChange('all')">
+            View all notifications
+          </button>
+        }
+      </div>
+    } @else {
+      <!-- Grouped Notifications -->
+      <div class="notifications-list">
+        @for (group of groupedNotifications(); track trackByGroupDate($index, group)) {
+          <div class="notification-group">
+            <h3 class="group-label">{{ group.label }}</h3>
+            <div class="group-items">
+              @for (notification of group.notifications; track trackByNotificationId($index, notification)) {
+                <smc-notification-card
+                  [notification]="notification"
+                  (markAsRead)="onMarkAsRead($event)"
+                  (delete)="onDelete($event)"
+                  (click)="onNotificationClick($event)"
+                />
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+
+  <!-- Updating Overlay -->
+  @if (isUpdating()) {
+    <div class="updating-indicator">
+      <mat-spinner diameter="24"></mat-spinner>
+    </div>
+  }
+</div>
+
+

@@ -1,0 +1,84 @@
+<div class="counter-dialog">
+  <div class="dialog-header">
+    <div class="icon-wrapper counter">
+      <mat-icon>swap_horiz</mat-icon>
+    </div>
+    <h2>Make Counter Offer</h2>
+    <p class="subtitle">To {{ data.bid.buyerName }}</p>
+  </div>
+
+  <mat-dialog-content>
+    <!-- Current Prices -->
+    <div class="price-comparison">
+      <div class="price-item">
+        <span class="label">Their Bid</span>
+        <span class="value bid">₹{{ data.bid.amount }}</span>
+      </div>
+      <mat-icon class="arrow">arrow_forward</mat-icon>
+      <div class="price-item">
+        <span class="label">Your Counter</span>
+        <span class="value counter">₹{{ counterAmount() }}</span>
+      </div>
+    </div>
+
+    <!-- Price Slider -->
+    <div class="slider-section">
+      <div class="slider-labels">
+        <span>₹{{ data.bid.amount }}</span>
+        <span>₹{{ maxPrice }}</span>
+      </div>
+      <mat-slider 
+        [min]="data.bid.amount" 
+        [max]="maxPrice"
+        [step]="1"
+        showTickMarks
+        discrete>
+        <input matSliderThumb [(ngModel)]="counterAmountValue" />
+      </mat-slider>
+    </div>
+
+    <!-- Manual Input -->
+    <mat-form-field appearance="outline" class="amount-input">
+      <mat-label>Counter Amount (₹/{{ data.bid.unit }})</mat-label>
+      <input 
+        matInput 
+        type="number" 
+        [(ngModel)]="counterAmountValue"
+        [min]="data.bid.amount"
+        [max]="maxPrice" />
+      <span matPrefix>₹&nbsp;</span>
+      <span matSuffix>/{{ data.bid.unit }}</span>
+    </mat-form-field>
+
+    <!-- Difference Info -->
+    <div class="difference-info" [class.positive]="priceDiff() > 0">
+      @if (priceDiff() > 0) {
+        <mat-icon>trending_up</mat-icon>
+        <span>₹{{ priceDiff() }} more than their bid (+{{ diffPercentage() | number:'1.1-1' }}%)</span>
+      } @else {
+        <mat-icon>info</mat-icon>
+        <span>Same as their bid</span>
+      }
+    </div>
+
+    <!-- Total Value -->
+    <div class="total-value">
+      <span class="label">Total Value</span>
+      <span class="value">₹{{ totalValue() | number:'1.0-0' }}</span>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button 
+      mat-flat-button 
+      color="primary" 
+      (click)="onConfirm()"
+      [disabled]="!isValid()">
+      <mat-icon>send</mat-icon>
+      Send Counter Offer
+    </button>
+  </mat-dialog-actions>
+</div>
+
+

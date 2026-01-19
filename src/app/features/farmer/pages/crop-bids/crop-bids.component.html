@@ -1,0 +1,177 @@
+<!-- Crop Bids Page -->
+<div class="crop-bids-page">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <button mat-icon-button (click)="goBack()" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div class="header-info">
+        <h1>Bids on Your Crop</h1>
+        @if (cropSummary(); as summary) {
+          <p class="crop-name">{{ summary.cropName }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="header-right">
+      <!-- Connection Status -->
+      <div class="connection-status" [class.connected]="isConnected()" [class.connecting]="isConnecting()">
+        @if (isConnected()) {
+          <mat-icon>wifi</mat-icon>
+          <span>Live</span>
+        } @else if (isConnecting()) {
+          <mat-icon>sync</mat-icon>
+          <span>Connecting...</span>
+        } @else {
+          <mat-icon>wifi_off</mat-icon>
+          <span>Offline</span>
+        }
+      </div>
+
+      <button mat-icon-button (click)="refreshBids()" matTooltip="Refresh Bids">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </header>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Loading bids...</p>
+    </div>
+  } @else {
+    <!-- Crop Summary Card -->
+    @if (cropSummary(); as summary) {
+      <mat-card class="summary-card">
+        <div class="summary-content">
+          <div class="crop-image">
+            <img [src]="summary.cropImage" [alt]="summary.cropName" />
+          </div>
+          
+          <div class="summary-details">
+            <h2>{{ summary.cropName }}</h2>
+            <p class="quantity">{{ summary.quantity }} {{ summary.unit }} available</p>
+            
+            <div class="price-info">
+              <div class="price-item">
+                <span class="label">Listed Price</span>
+                <span class="value">₹{{ summary.listedPrice }}/{{ summary.unit }}</span>
+              </div>
+              
+              @if (highestBid(); as highest) {
+                <div class="price-item highlight">
+                  <span class="label">Highest Bid</span>
+                  <span class="value">₹{{ highest.amount }}/{{ summary.unit }}</span>
+                  @if (priceDifference(); as diff) {
+                    <span class="diff" [class.positive]="diff.amount >= 0" [class.negative]="diff.amount < 0">
+                      {{ diff.amount >= 0 ? '+' : '' }}{{ diff.percentage | number:'1.1-1' }}%
+                    </span>
+                  }
+                </div>
+              }
+              
+              <div class="price-item">
+                <span class="label">Average Bid</span>
+                <span class="value">₹{{ summary.averageBid | number:'1.0-0' }}/{{ summary.unit }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bid-stats">
+            <div class="stat">
+              <span class="count">{{ summary.totalBids }}</span>
+              <span class="label">Total Bids</span>
+            </div>
+            <div class="stat pending">
+              <span class="count">{{ summary.pendingBids }}</span>
+              <span class="label">Pending</span>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+    }
+
+    <!-- Filter Chips -->
+    <div class="filter-section">
+      <mat-chip-listbox [value]="selectedFilter()" (change)="setFilter($event.value)">
+        <mat-chip-option value="all">
+          All
+          <span class="chip-count">({{ totalBidCount() }})</span>
+        </mat-chip-option>
+        <mat-chip-option value="pending">
+          Pending
+          <span class="chip-count">({{ pendingBidCount() }})</span>
+        </mat-chip-option>
+        <mat-chip-option value="accepted">
+          Accepted
+        </mat-chip-option>
+        <mat-chip-option value="rejected">
+          Rejected
+        </mat-chip-option>
+      </mat-chip-listbox>
+    </div>
+
+    <!-- Bids List -->
+    <div class="bids-container">
+      @if (filteredBids().length === 0) {
+        <div class="empty-state">
+          <mat-icon>inbox</mat-icon>
+          <h3>No bids yet</h3>
+          <p>When buyers place bids on your crop, they'll appear here in real-time.</p>
+        </div>
+      } @else {
+        <!-- Highest Bid Highlight -->
+        @if (selectedFilter() === 'all' || selectedFilter() === 'pending') {
+          @if (highestBid(); as highest) {
+            <div class="highest-bid-section">
+              <div class="section-header">
+                <mat-icon>emoji_events</mat-icon>
+                <span>Highest Bid</span>
+              </div>
+              <smc-bid-card
+                [bid]="highest"
+                [isHighlighted]="true"
+                [currentTime]="currentTime()"
+                (accept)="onAcceptBid($event)"
+                (reject)="onRejectBid($event)"
+                (counter)="onCounterBid($event)"
+                (viewProfile)="onViewBuyerProfile($event)"
+              />
+            </div>
+            <mat-divider></mat-divider>
+          }
+        }
+
+        <!-- Other Bids -->
+        <div class="bids-list">
+          @for (bid of filteredBids(); track trackByBidId($index, bid)) {
+            @if (!bid.isHighest || selectedFilter() !== 'all') {
+              <smc-bid-card
+                [bid]="bid"
+                [isHighlighted]="false"
+                [currentTime]="currentTime()"
+                (accept)="onAcceptBid($event)"
+                (reject)="onRejectBid($event)"
+                (counter)="onCounterBid($event)"
+                (viewProfile)="onViewBuyerProfile($event)"
+              />
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Processing Overlay -->
+  @if (isProcessing()) {
+    <div class="processing-overlay">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Processing...</p>
+    </div>
+  }
+</div>
+
+
+

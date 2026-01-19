@@ -1,0 +1,217 @@
+<!-- Marketplace Filters -->
+<div class="filters-container">
+  <!-- Header -->
+  <div class="filters-header">
+    <div class="header-title">
+      <mat-icon>filter_list</mat-icon>
+      <h3>Filters</h3>
+      @if (activeFilterCount() > 0) {
+        <span class="filter-count">{{ activeFilterCount() }}</span>
+      }
+    </div>
+    <button mat-icon-button class="close-btn" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Filters Content -->
+  <div class="filters-content">
+    <!-- Sort By -->
+    <mat-expansion-panel expanded>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>sort</mat-icon>
+          Sort By
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-radio-group 
+        [value]="filters().sortBy" 
+        (change)="onSortChange($event.value)"
+        class="sort-options"
+      >
+        @for (option of sortOptions; track option.value) {
+          <mat-radio-button [value]="option.value">
+            <mat-icon>{{ option.icon }}</mat-icon>
+            {{ option.label }}
+          </mat-radio-button>
+        }
+      </mat-radio-group>
+    </mat-expansion-panel>
+
+    <!-- Categories -->
+    <mat-expansion-panel expanded>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>category</mat-icon>
+          Category
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="category-list">
+        <button
+          class="category-item"
+          [class.active]="!filters().category"
+          (click)="onCategoryChange('')"
+        >
+          <span>All Categories</span>
+        </button>
+        @for (cat of categories(); track cat.id) {
+          <button
+            class="category-item"
+            [class.active]="filters().category === cat.name"
+            (click)="onCategoryChange(cat.name)"
+          >
+            <mat-icon>{{ cat.icon }}</mat-icon>
+            <span>{{ cat.name }}</span>
+            <span class="count">({{ cat.count }})</span>
+          </button>
+        }
+      </div>
+    </mat-expansion-panel>
+
+    <!-- Location -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>location_on</mat-icon>
+          Location
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="location-list">
+        <button
+          class="location-item"
+          [class.active]="!filters().location"
+          (click)="onLocationChange('')"
+        >
+          <span>All Locations</span>
+        </button>
+        @for (loc of locations(); track loc.id) {
+          <button
+            class="location-item"
+            [class.active]="filters().location === loc.name"
+            (click)="onLocationChange(loc.name)"
+          >
+            <span class="location-name">{{ loc.name }}</span>
+            <span class="location-state">{{ loc.state }}</span>
+            <span class="count">({{ loc.count }})</span>
+          </button>
+        }
+      </div>
+    </mat-expansion-panel>
+
+    <!-- Quality Grade -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>verified</mat-icon>
+          Quality Grade
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="quality-list">
+        @for (grade of qualityGrades; track grade.value) {
+          <mat-checkbox
+            [checked]="isQualitySelected(grade.value)"
+            (change)="onQualityToggle(grade.value)"
+            class="quality-item"
+          >
+            <mat-icon>{{ grade.icon }}</mat-icon>
+            {{ grade.label }}
+          </mat-checkbox>
+        }
+      </div>
+    </mat-expansion-panel>
+
+    <!-- Price Range -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>payments</mat-icon>
+          Price Range
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="price-range">
+        <div class="price-display">
+          <span>₹{{ localPriceMin() }}</span>
+          <span>-</span>
+          <span>₹{{ localPriceMax() }}</span>
+        </div>
+
+        <div class="slider-container">
+          <label>Min Price</label>
+          <mat-slider 
+            [min]="0" 
+            [max]="10000" 
+            [step]="100"
+            discrete
+          >
+            <input 
+              matSliderThumb 
+              [ngModel]="localPriceMin()" 
+              (ngModelChange)="localPriceMin.set($event)"
+              (change)="onPriceRangeChange()"
+            />
+          </mat-slider>
+        </div>
+
+        <div class="slider-container">
+          <label>Max Price</label>
+          <mat-slider 
+            [min]="0" 
+            [max]="10000" 
+            [step]="100"
+            discrete
+          >
+            <input 
+              matSliderThumb 
+              [ngModel]="localPriceMax()" 
+              (ngModelChange)="localPriceMax.set($event)"
+              (change)="onPriceRangeChange()"
+            />
+          </mat-slider>
+        </div>
+      </div>
+    </mat-expansion-panel>
+
+    <!-- Organic Filter -->
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>eco</mat-icon>
+          Organic
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-radio-group 
+        [value]="filters().isOrganic" 
+        (change)="onOrganicChange($event.value)"
+        class="organic-options"
+      >
+        <mat-radio-button [value]="null">All Products</mat-radio-button>
+        <mat-radio-button [value]="true">
+          <mat-icon class="organic-icon">eco</mat-icon>
+          Organic Only
+        </mat-radio-button>
+        <mat-radio-button [value]="false">Non-Organic</mat-radio-button>
+      </mat-radio-group>
+    </mat-expansion-panel>
+  </div>
+
+  <!-- Footer Actions -->
+  <div class="filters-footer">
+    <button mat-button (click)="onReset()">
+      <mat-icon>restart_alt</mat-icon>
+      Reset All
+    </button>
+    <button mat-flat-button color="primary" (click)="onApply()">
+      <mat-icon>check</mat-icon>
+      Apply Filters
+    </button>
+  </div>
+</div>
+
+
+

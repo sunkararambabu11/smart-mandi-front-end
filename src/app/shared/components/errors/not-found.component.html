@@ -1,0 +1,38 @@
+<div class="error-page">
+  <div class="error-page__content animate-slide-up">
+    <div class="error-page__illustration">
+      <svg viewBox="0 0 200 200" class="illustration">
+        <circle cx="100" cy="100" r="80" fill="#f0fdf4" />
+        <path
+          d="M60 80 Q100 40 140 80 Q100 120 60 80"
+          fill="#22c55e"
+          opacity="0.6" />
+        <circle cx="75" cy="85" r="8" fill="#1b4332" />
+        <circle cx="125" cy="85" r="8" fill="#1b4332" />
+        <path
+          d="M80 120 Q100 110 120 120"
+          stroke="#1b4332"
+          stroke-width="4"
+          fill="none"
+          stroke-linecap="round" />
+      </svg>
+    </div>
+    <h1 class="error-page__code">404</h1>
+    <h2 class="error-page__title">Page Not Found</h2>
+    <p class="error-page__message">
+      Oops! The page you're looking for seems to have wandered off to the
+      fields. Let's get you back on track.
+    </p>
+    <div class="error-page__actions">
+      <a mat-raised-button color="primary" routerLink="/dashboard">
+        <mat-icon>home</mat-icon>
+        Go to Dashboard
+      </a>
+      <a mat-stroked-button routerLink="/marketplace">
+        <mat-icon>storefront</mat-icon>
+        Browse Marketplace
+      </a>
+    </div>
+  </div>
+</div>
+

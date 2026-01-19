@@ -1,0 +1,10 @@
+<span class="status-chip" [class]="classes()">
+  @if (showIcon() && iconName()) {
+    <mat-icon>{{ iconName() }}</mat-icon>
+  }
+  @if (showDot() && !showIcon()) {
+    <span class="dot"></span>
+  }
+  <span class="label">{{ displayLabel() }}</span>
+</span>
+

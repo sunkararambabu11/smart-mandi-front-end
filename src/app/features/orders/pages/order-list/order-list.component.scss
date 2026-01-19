@@ -1,0 +1,51 @@
+.order-list-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+  
+  h1 {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--smc-text-primary);
+    margin: 0 0 0.25rem;
+  }
+  
+  p {
+    font-size: 0.875rem;
+    color: var(--smc-text-secondary);
+    margin: 0;
+  }
+}
+
+.empty-state-card {
+  padding: 3rem 2rem !important;
+  text-align: center;
+  border-radius: 1rem !important;
+}
+
+.empty-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+
+.empty-state-card h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--smc-text-primary);
+  margin: 0 0 0.5rem;
+}
+
+.empty-state-card p {
+  font-size: 0.875rem;
+  color: var(--smc-text-secondary);
+  margin: 0 0 1.5rem;
+}
+

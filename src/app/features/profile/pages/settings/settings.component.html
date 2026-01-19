@@ -1,0 +1,253 @@
+<div class="settings-page">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Settings</h1>
+      <p>Manage your app preferences and notifications</p>
+    </div>
+    @if (isSaving()) {
+      <span class="saving-indicator">
+        <mat-icon>sync</mat-icon>
+        Saving...
+      </span>
+    }
+  </header>
+
+  <!-- App Preferences -->
+  <mat-card class="settings-card">
+    <div class="card-header">
+      <mat-icon>tune</mat-icon>
+      <div>
+        <h2>App Preferences</h2>
+        <p>Customize your app experience</p>
+      </div>
+    </div>
+
+    <div class="settings-list">
+      <!-- Language -->
+      <div class="setting-item">
+        <div class="setting-info">
+          <mat-icon>language</mat-icon>
+          <div>
+            <h3>Language</h3>
+            <p>Choose your preferred language</p>
+          </div>
+        </div>
+        <mat-form-field appearance="outline" class="setting-control">
+          <mat-select 
+            [value]="preferences().language"
+            (selectionChange)="updatePreference('language', $event.value)">
+            @for (lang of languages; track lang.code) {
+              <mat-option [value]="lang.code">
+                {{ lang.name }} ({{ lang.native }})
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Theme -->
+      <div class="setting-item">
+        <div class="setting-info">
+          <mat-icon>palette</mat-icon>
+          <div>
+            <h3>Theme</h3>
+            <p>Select app appearance</p>
+          </div>
+        </div>
+        <div class="theme-options">
+          @for (theme of themes; track theme.value) {
+            <button 
+              class="theme-btn"
+              [class.active]="preferences().theme === theme.value"
+              (click)="updatePreference('theme', theme.value)"
+              [attr.aria-pressed]="preferences().theme === theme.value">
+              <mat-icon>{{ theme.icon }}</mat-icon>
+              <span>{{ theme.label }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Compact View -->
+      <div class="setting-item">
+        <div class="setting-info">
+          <mat-icon>view_compact</mat-icon>
+          <div>
+            <h3>Compact View</h3>
+            <p>Show more items on screen</p>
+          </div>
+        </div>
+        <mat-slide-toggle
+          [checked]="preferences().compactView"
+          (change)="updatePreference('compactView', $event.checked)"
+          color="primary">
+        </mat-slide-toggle>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Notification Settings -->
+  <mat-card class="settings-card">
+    <div class="card-header">
+      <mat-icon>notifications</mat-icon>
+      <div>
+        <h2>Notifications</h2>
+        <p>Control what notifications you receive</p>
+      </div>
+    </div>
+
+    <div class="settings-list">
+      <!-- Order Updates -->
+      <div class="setting-item">
+        <div class="setting-info">
+          <mat-icon>local_shipping</mat-icon>
+          <div>
+            <h3>Order Updates</h3>
+            <p>Get notified about order status changes</p>
+          </div>
+        </div>
+        <mat-slide-toggle
+          [checked]="notifications().orderUpdates"
+          (change)="updateNotification('orderUpdates', $event.checked)"
+          color="primary">
+        </mat-slide-toggle>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Bid Alerts -->
+      <div class="setting-item">
+        <div class="setting-info">
+          <mat-icon>gavel</mat-icon>
+          <div>
+            <h3>Bid Alerts</h3>
+            <p>Receive alerts for new bids on your crops</p>
+          </div>
+        </div>
+        <mat-slide-toggle
+          [checked]="notifications().bidAlerts"
+          (change)="updateNotification('bidAlerts', $event.checked)"
+          color="primary">
+        </mat-slide-toggle>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Price Alerts -->
+      <div class="setting-item">
+        <div class="setting-info">
+          <mat-icon>trending_up</mat-icon>
+          <div>
+            <h3>Price Alerts</h3>
+            <p>Get notified when prices change for watched items</p>
+          </div>
+        </div>
+        <mat-slide-toggle
+          [checked]="notifications().priceAlerts"
+          (change)="updateNotification('priceAlerts', $event.checked)"
+          color="primary">
+        </mat-slide-toggle>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Promotions -->
+      <div class="setting-item">
+        <div class="setting-info">
+          <mat-icon>local_offer</mat-icon>
+          <div>
+            <h3>Promotions & Offers</h3>
+            <p>Receive special offers and discounts</p>
+          </div>
+        </div>
+        <mat-slide-toggle
+          [checked]="notifications().promotions"
+          (change)="updateNotification('promotions', $event.checked)"
+          color="primary">
+        </mat-slide-toggle>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <!-- Newsletter -->
+      <div class="setting-item">
+        <div class="setting-info">
+          <mat-icon>mail</mat-icon>
+          <div>
+            <h3>Newsletter</h3>
+            <p>Weekly updates and farming tips</p>
+          </div>
+        </div>
+        <mat-slide-toggle
+          [checked]="notifications().newsletter"
+          (change)="updateNotification('newsletter', $event.checked)"
+          color="primary">
+        </mat-slide-toggle>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Notification Channels -->
+  <mat-card class="settings-card">
+    <div class="card-header">
+      <mat-icon>devices</mat-icon>
+      <div>
+        <h2>Notification Channels</h2>
+        <p>Choose how you receive notifications</p>
+      </div>
+    </div>
+
+    <div class="channels-grid">
+      <div class="channel-card" [class.active]="notifications().pushNotifications">
+        <mat-icon>phone_android</mat-icon>
+        <h3>Push</h3>
+        <p>In-app notifications</p>
+        <mat-slide-toggle
+          [checked]="notifications().pushNotifications"
+          (change)="updateNotification('pushNotifications', $event.checked)"
+          color="primary">
+        </mat-slide-toggle>
+      </div>
+
+      <div class="channel-card" [class.active]="notifications().smsNotifications">
+        <mat-icon>sms</mat-icon>
+        <h3>SMS</h3>
+        <p>Text messages</p>
+        <mat-slide-toggle
+          [checked]="notifications().smsNotifications"
+          (change)="updateNotification('smsNotifications', $event.checked)"
+          color="primary">
+        </mat-slide-toggle>
+      </div>
+
+      <div class="channel-card" [class.active]="notifications().emailNotifications">
+        <mat-icon>email</mat-icon>
+        <h3>Email</h3>
+        <p>Email notifications</p>
+        <mat-slide-toggle
+          [checked]="notifications().emailNotifications"
+          (change)="updateNotification('emailNotifications', $event.checked)"
+          color="primary">
+        </mat-slide-toggle>
+      </div>
+    </div>
+  </mat-card>
+
+  <!-- Actions -->
+  <div class="page-actions">
+    <button mat-stroked-button (click)="resetToDefaults()">
+      <mat-icon>restore</mat-icon>
+      Reset to Defaults
+    </button>
+    <button mat-raised-button color="primary" (click)="saveSettings()" [disabled]="isSaving()">
+      <mat-icon>save</mat-icon>
+      Save Settings
+    </button>
+  </div>
+</div>
+

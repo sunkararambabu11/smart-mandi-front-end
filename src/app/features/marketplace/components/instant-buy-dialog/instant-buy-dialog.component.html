@@ -1,0 +1,121 @@
+<div class="instant-buy-dialog">
+  <div class="dialog-header">
+    <div class="icon-wrapper">
+      <mat-icon>flash_on</mat-icon>
+    </div>
+    <h2>Instant Buy</h2>
+    <p class="subtitle">{{ data.crop.cropName }}</p>
+  </div>
+
+  <mat-dialog-content>
+    <!-- Crop Summary -->
+    <div class="crop-summary">
+      <div class="crop-image">
+        @if (data.crop.images[0]; as img) {
+          <img [src]="img.thumbnailUrl" [alt]="data.crop.cropName" />
+        }
+      </div>
+      <div class="crop-info">
+        <span class="price">₹{{ data.crop.instantBuyPrice }}/{{ data.crop.unit }}</span>
+        <span class="available">{{ data.crop.availableQuantity }} {{ data.crop.unit }} available</span>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Quantity Selection -->
+    <div class="quantity-section">
+      <label>Select Quantity</label>
+      <div class="quantity-controls">
+        <button mat-icon-button (click)="decreaseQuantity()">
+          <mat-icon>remove</mat-icon>
+        </button>
+        <input
+          type="number"
+          [(ngModel)]="quantityValue"
+          [min]="1"
+          [max]="data.crop.availableQuantity" />
+        <span class="unit">{{ data.crop.unit }}</span>
+        <button mat-icon-button (click)="increaseQuantity()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+      <mat-slider
+        [min]="1"
+        [max]="data.crop.availableQuantity"
+        [step]="1"
+        discrete
+        showTickMarks
+        class="quantity-slider">
+        <input matSliderThumb [(ngModel)]="quantityValue" />
+      </mat-slider>
+      <div class="slider-labels">
+        <span>1 {{ data.crop.unit }}</span>
+        <span>{{ data.crop.availableQuantity }} {{ data.crop.unit }}</span>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Payment Method -->
+    <div class="payment-section">
+      <label>Payment Method</label>
+      <mat-radio-group [(ngModel)]="paymentMethod" class="payment-options">
+        <mat-radio-button value="upi">
+          <div class="payment-option">
+            <mat-icon>account_balance</mat-icon>
+            <span>UPI Payment</span>
+          </div>
+        </mat-radio-button>
+        <mat-radio-button value="online">
+          <div class="payment-option">
+            <mat-icon>credit_card</mat-icon>
+            <span>Card / Net Banking</span>
+          </div>
+        </mat-radio-button>
+        <mat-radio-button value="cod">
+          <div class="payment-option">
+            <mat-icon>payments</mat-icon>
+            <span>Cash on Delivery</span>
+          </div>
+        </mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span>₹{{ subtotal() | number:'1.0-0' }}</span>
+      </div>
+      <div class="summary-row">
+        <span>Platform Fee (2%)</span>
+        <span>₹{{ platformFee() | number:'1.0-0' }}</span>
+      </div>
+      <div class="summary-row delivery">
+        <span>Estimated Delivery</span>
+        <span>{{ data.crop.shippingInfo.estimatedDeliveryDays }} days</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span class="total-amount">₹{{ total() | number:'1.0-0' }}</span>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="onConfirm()"
+      [disabled]="!isValid()">
+      <mat-icon>flash_on</mat-icon>
+      Buy Now
+    </button>
+  </mat-dialog-actions>
+</div>
+
+

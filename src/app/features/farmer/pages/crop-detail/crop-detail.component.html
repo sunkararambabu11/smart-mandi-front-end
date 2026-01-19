@@ -1,0 +1,22 @@
+<div class="crop-detail-page p-4 md:p-6">
+  <header class="flex items-center gap-4 mb-6">
+    <a routerLink="/farmer/crops" class="back-btn">
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+    <h1 class="text-2xl font-bold text-gray-900">Crop Details</h1>
+  </header>
+
+  <mat-card class="rounded-xl p-6">
+    <div class="flex flex-col items-center py-8 text-gray-400">
+      <mat-icon class="text-5xl mb-2">eco</mat-icon>
+      <p>Viewing crop: {{ id() }}</p>
+      <p class="text-sm mt-2">Full crop details coming soon...</p>
+      <a mat-raised-button color="primary" routerLink="/farmer/crops" class="mt-4">
+        <mat-icon>arrow_back</mat-icon>
+        Back to My Crops
+      </a>
+    </div>
+  </mat-card>
+</div>
+
+

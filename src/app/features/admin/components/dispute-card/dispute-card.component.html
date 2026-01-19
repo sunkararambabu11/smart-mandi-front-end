@@ -1,0 +1,64 @@
+<div class="dispute-card" [class]="priorityClass()">
+  <!-- Priority Indicator -->
+  <div class="priority-bar"></div>
+
+  <!-- Header -->
+  <div class="dispute-header">
+    <div class="dispute-id">
+      <mat-icon>{{ typeIcon() }}</mat-icon>
+      <span>#{{ dispute().id.split('_')[1] }}</span>
+    </div>
+    <span class="status-badge" [class]="statusClass()">
+      {{ dispute().status | lowercase }}
+    </span>
+  </div>
+
+  <!-- Content -->
+  <div class="dispute-content">
+    <p class="dispute-description">{{ dispute().description }}</p>
+
+    <div class="parties">
+      <div class="party">
+        <span class="party-label">Raised by</span>
+        <span class="party-name">{{ dispute().raisedBy.name }}</span>
+        <span class="party-role">{{ dispute().raisedBy.role }}</span>
+      </div>
+      <mat-icon class="vs-icon">swap_horiz</mat-icon>
+      <div class="party">
+        <span class="party-label">Against</span>
+        <span class="party-name">{{ dispute().against.name }}</span>
+        <span class="party-role">{{ dispute().against.role }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="dispute-footer">
+    <div class="dispute-meta">
+      <span class="amount">{{ dispute().amount | currency:'INR':'symbol':'1.0-0' }}</span>
+      <span class="date">{{ dispute().createdAt | date:'shortDate' }}</span>
+    </div>
+    <div class="dispute-actions">
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="onView()"
+        matTooltip="View Details">
+        <mat-icon>visibility</mat-icon>
+        View
+      </button>
+      @if (canResolve()) {
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="onResolve()"
+          matTooltip="Resolve Dispute">
+          <mat-icon>check_circle</mat-icon>
+          Resolve
+        </button>
+      }
+    </div>
+  </div>
+</div>
+
+

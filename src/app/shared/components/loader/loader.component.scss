@@ -1,0 +1,265 @@
+// ============================================
+// Container
+// ============================================
+
+.loader-container {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+
+  &.full-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+  }
+
+  &.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(2px);
+    z-index: 10;
+  }
+
+  &.inline {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+}
+
+// ============================================
+// Color Variants
+// ============================================
+
+.color-primary {
+  --loader-color: var(--smc-primary);
+  --loader-track: rgba(45, 106, 79, 0.15);
+}
+
+.color-accent {
+  --loader-color: var(--smc-accent);
+  --loader-track: rgba(233, 196, 106, 0.2);
+}
+
+.color-white {
+  --loader-color: white;
+  --loader-track: rgba(255, 255, 255, 0.25);
+}
+
+.color-muted {
+  --loader-color: var(--smc-text-muted);
+  --loader-track: rgba(148, 163, 184, 0.2);
+}
+
+.color-current {
+  --loader-color: currentColor;
+  --loader-track: currentColor;
+}
+
+// ============================================
+// Spinner Variant
+// ============================================
+
+.loader-spinner {
+  svg {
+    animation: rotate 1.4s linear infinite;
+
+    &.xs { width: 16px; height: 16px; }
+    &.sm { width: 24px; height: 24px; }
+    &.md { width: 40px; height: 40px; }
+    &.lg { width: 56px; height: 56px; }
+    &.xl { width: 80px; height: 80px; }
+  }
+
+  .track {
+    stroke: var(--loader-track, rgba(0, 0, 0, 0.1));
+  }
+
+  .path {
+    stroke: var(--loader-color, var(--smc-primary));
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: 0;
+    animation: dash 1.4s ease-in-out infinite;
+    transform-origin: center;
+  }
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124px;
+  }
+}
+
+// ============================================
+// Dots Variant
+// ============================================
+
+.loader-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+
+  &.xs { gap: 0.25rem; }
+  &.sm { gap: 0.3rem; }
+  &.lg { gap: 0.5rem; }
+  &.xl { gap: 0.625rem; }
+
+  .dot {
+    border-radius: 50%;
+    background: var(--loader-color, var(--smc-primary));
+    animation: bounce-dot 1.4s ease-in-out infinite;
+  }
+
+  &.xs .dot { width: 6px; height: 6px; }
+  &.sm .dot { width: 8px; height: 8px; }
+  &.md .dot { width: 12px; height: 12px; }
+  &.lg .dot { width: 16px; height: 16px; }
+  &.xl .dot { width: 20px; height: 20px; }
+
+  .dot:nth-child(1) { animation-delay: 0s; }
+  .dot:nth-child(2) { animation-delay: 0.16s; }
+  .dot:nth-child(3) { animation-delay: 0.32s; }
+}
+
+@keyframes bounce-dot {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+// ============================================
+// Pulse Variant
+// ============================================
+
+.loader-pulse {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.xs { width: 20px; height: 20px; }
+  &.sm { width: 28px; height: 28px; }
+  &.md { width: 44px; height: 44px; }
+  &.lg { width: 60px; height: 60px; }
+  &.xl { width: 84px; height: 84px; }
+
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 2px solid var(--loader-color, var(--smc-primary));
+    animation: pulse-ring 1.8s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+    opacity: 0;
+  }
+
+  &.xs .ring { border-width: 1.5px; }
+  &.lg .ring, &.xl .ring { border-width: 3px; }
+
+  .ring-1 { width: 33%; height: 33%; animation-delay: 0s; }
+  .ring-2 { width: 66%; height: 66%; animation-delay: 0.2s; }
+  .ring-3 { width: 100%; height: 100%; animation-delay: 0.4s; }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+// ============================================
+// Bars Variant
+// ============================================
+
+.loader-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.1875rem;
+
+  &.xs { height: 14px; gap: 0.125rem; }
+  &.sm { height: 18px; }
+  &.md { height: 28px; }
+  &.lg { height: 38px; gap: 0.25rem; }
+  &.xl { height: 52px; gap: 0.3rem; }
+
+  .bar {
+    background: var(--loader-color, var(--smc-primary));
+    border-radius: 2px;
+    animation: bars-scale 1.2s ease-in-out infinite;
+  }
+
+  &.xs .bar { width: 3px; }
+  &.sm .bar { width: 4px; }
+  &.md .bar { width: 5px; }
+  &.lg .bar { width: 6px; }
+  &.xl .bar { width: 8px; }
+
+  .bar:nth-child(1) { animation-delay: 0s; }
+  .bar:nth-child(2) { animation-delay: 0.12s; }
+  .bar:nth-child(3) { animation-delay: 0.24s; }
+  .bar:nth-child(4) { animation-delay: 0.36s; }
+}
+
+@keyframes bars-scale {
+  0%, 100% {
+    height: 30%;
+    opacity: 0.5;
+  }
+  50% {
+    height: 100%;
+    opacity: 1;
+  }
+}
+
+// ============================================
+// Text
+// ============================================
+
+.loader-text {
+  color: var(--smc-text-secondary);
+  font-weight: 500;
+  text-align: center;
+
+  &.text-xs { font-size: 0.6875rem; }
+  &.text-sm { font-size: 0.75rem; }
+  &.text-md { font-size: 0.875rem; }
+  &.text-lg { font-size: 1rem; }
+  &.text-xl { font-size: 1.125rem; }
+}
+

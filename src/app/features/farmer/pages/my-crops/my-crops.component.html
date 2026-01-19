@@ -1,0 +1,156 @@
+<div class="my-crops-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <a routerLink="/farmer/dashboard" class="back-btn">
+          <mat-icon>arrow_back</mat-icon>
+        </a>
+        <div class="header-text">
+          <h1 class="page-title">My Crops</h1>
+          <p class="page-subtitle">
+            Manage your crop listings
+            <span class="crop-count">({{ cropService.crops().length }} total)</span>
+          </p>
+        </div>
+      </div>
+      <a mat-raised-button color="primary" routerLink="/farmer/add-crop" class="add-btn">
+        <mat-icon>add</mat-icon>
+        Add Crop
+      </a>
+    </div>
+  </header>
+
+  <!-- Filters Section -->
+  <section class="filters-section">
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        type="text"
+        placeholder="Search crops by name or category..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        class="search-input"
+      />
+      @if (searchQuery()) {
+        <button mat-icon-button class="clear-btn" (click)="clearSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </div>
+
+    <!-- Filter Controls -->
+    <div class="filter-controls">
+      <!-- Status Chips -->
+      <div class="status-chips">
+        @for (status of statusOptions; track status.value) {
+          <button
+            class="status-chip"
+            [class.active]="statusFilter() === status.value"
+            (click)="statusFilter.set(status.value)"
+          >
+            {{ status.label }}
+            <span class="chip-count">{{ status.count() }}</span>
+          </button>
+        }
+      </div>
+
+      <!-- Sort & View Controls -->
+      <div class="view-controls">
+        <!-- Sort Dropdown -->
+        <mat-form-field appearance="outline" class="sort-field">
+          <mat-select [ngModel]="sortBy()" (ngModelChange)="sortBy.set($event)">
+            @for (option of sortOptions; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <!-- View Toggle -->
+        <button
+          mat-icon-button
+          class="view-toggle"
+          (click)="toggleViewMode()"
+          [matTooltip]="viewMode() === 'grid' ? 'List view' : 'Grid view'"
+        >
+          <mat-icon>{{ viewMode() === 'grid' ? 'view_list' : 'grid_view' }}</mat-icon>
+        </button>
+
+        <!-- Refresh Button -->
+        <button mat-icon-button (click)="onRefresh()" matTooltip="Refresh">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Loading your crops...</p>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading() && !hasCrops()) {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <mat-icon>eco</mat-icon>
+      </div>
+      <h2>No crops listed yet</h2>
+      <p>Start by adding your first crop listing to reach buyers</p>
+      <a mat-raised-button color="primary" routerLink="/farmer/add-crop">
+        <mat-icon>add</mat-icon>
+        Add Your First Crop
+      </a>
+    </div>
+  }
+
+  <!-- No Results State -->
+  @if (!isLoading() && hasCrops() && !hasResults()) {
+    <div class="empty-state">
+      <div class="empty-icon search">
+        <mat-icon>search_off</mat-icon>
+      </div>
+      <h2>No crops found</h2>
+      <p>Try adjusting your search or filters</p>
+      <button mat-stroked-button (click)="searchQuery.set(''); statusFilter.set('all')">
+        <mat-icon>filter_alt_off</mat-icon>
+        Clear Filters
+      </button>
+    </div>
+  }
+
+  <!-- Crops Grid/List with Virtual Scrolling -->
+  @if (!isLoading() && hasResults()) {
+    <cdk-virtual-scroll-viewport
+      [itemSize]="itemSize()"
+      class="crops-viewport"
+      [class.grid-view]="viewMode() === 'grid'"
+      [class.list-view]="viewMode() === 'list'"
+    >
+      <div
+        class="crops-container"
+        [class.grid]="viewMode() === 'grid'"
+        [class.list]="viewMode() === 'list'"
+      >
+        @for (crop of filteredCrops(); track trackByCrop($index, crop)) {
+          <smc-crop-card
+            [crop]="crop"
+            [compact]="viewMode() === 'list'"
+            (viewCrop)="onViewCrop($event)"
+            (editCrop)="onEditCrop($event)"
+            (deleteCrop)="onDeleteCrop($event)"
+            (duplicateCrop)="onDuplicateCrop($event)"
+            (markAsSold)="onMarkAsSold($event)"
+          />
+        }
+      </div>
+    </cdk-virtual-scroll-viewport>
+  }
+</div>
+
+
+

@@ -1,0 +1,221 @@
+<div class="space-y-6 animate-stagger">
+  <!-- Welcome Section -->
+  <div
+    class="bg-gradient-to-r from-primary-600 to-primary-700 rounded-2xl p-6 
+           text-white relative overflow-hidden"
+  >
+    <div class="absolute right-0 top-0 w-64 h-64 opacity-10">
+      <svg viewBox="0 0 200 200" class="w-full h-full">
+        <path
+          fill="currentColor"
+          d="M100,0 C155.228,0 200,44.772 200,100 C200,155.228 155.228,200 100,200 
+             C44.772,200 0,155.228 0,100 C0,44.772 44.772,0 100,0 Z"
+        />
+      </svg>
+    </div>
+    <div class="relative z-10">
+      <p class="text-primary-100 text-sm mb-1">
+        {{ greeting() }}
+      </p>
+      <h1 class="font-display text-2xl md:text-3xl font-bold mb-2">
+        {{ authService.displayName() }}! 👋
+      </h1>
+      <p class="text-primary-100 max-w-xl">
+        @if (authService.isFarmer()) {
+          Your products are performing great! You have 3 new orders waiting.
+        } @else {
+          Discover fresh produce directly from local farmers in your area.
+        }
+      </p>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    @for (action of quickActions(); track action.route) {
+      <a
+        [routerLink]="action.route"
+        class="group p-4 bg-white rounded-xl border border-gray-200 
+               hover:border-primary-300 hover:shadow-md transition-all duration-200
+               flex flex-col items-center text-center"
+      >
+        <div
+          [class]="action.color"
+          class="w-12 h-12 rounded-xl flex items-center justify-center mb-3
+                 group-hover:scale-110 transition-transform"
+        >
+          <mat-icon class="text-white">{{ action.icon }}</mat-icon>
+        </div>
+        <span class="text-sm font-medium text-gray-700">{{ action.label }}</span>
+      </a>
+    }
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    @for (stat of stats(); track stat.title) {
+      <mat-card class="!rounded-xl">
+        <mat-card-content class="p-4">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">{{ stat.title }}</p>
+              <p class="text-2xl font-display font-bold text-gray-900">
+                {{ stat.value }}
+              </p>
+              <p
+                [class]="{
+                  'text-green-600': stat.changeType === 'positive',
+                  'text-red-600': stat.changeType === 'negative',
+                  'text-gray-500': stat.changeType === 'neutral'
+                }"
+                class="text-xs mt-1 flex items-center gap-1"
+              >
+                @if (stat.changeType === 'positive') {
+                  <mat-icon class="text-sm">trending_up</mat-icon>
+                } @else if (stat.changeType === 'negative') {
+                  <mat-icon class="text-sm">trending_down</mat-icon>
+                }
+                {{ stat.change }}
+              </p>
+            </div>
+            <div [class]="stat.color" class="w-10 h-10 rounded-lg flex items-center justify-center">
+              <mat-icon class="text-white text-xl">{{ stat.icon }}</mat-icon>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Recent Orders -->
+    <mat-card class="lg:col-span-2 !rounded-xl">
+      <mat-card-header class="!px-6 !pt-6">
+        <mat-card-title class="font-display text-lg">Recent Orders</mat-card-title>
+        <mat-card-subtitle>Your latest transactions</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="!px-6 !pb-6">
+        <div class="divide-y divide-gray-100">
+          @for (order of recentOrders; track order.id) {
+            <div class="py-4 flex items-center justify-between">
+              <div class="flex items-center gap-4">
+                <img
+                  [src]="order.image"
+                  [alt]="order.product"
+                  class="w-12 h-12 rounded-lg object-cover"
+                />
+                <div>
+                  <p class="font-medium text-gray-900">{{ order.product }}</p>
+                  <p class="text-sm text-gray-500">{{ order.customer }}</p>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="font-semibold text-gray-900">₹{{ order.amount }}</p>
+                <span
+                  [class]="{
+                    'bg-green-100 text-green-700': order.status === 'delivered',
+                    'bg-blue-100 text-blue-700': order.status === 'shipped',
+                    'bg-yellow-100 text-yellow-700': order.status === 'pending'
+                  }"
+                  class="inline-block px-2 py-0.5 rounded-full text-xs font-medium capitalize"
+                >
+                  {{ order.status }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+        <a
+          routerLink="/orders"
+          mat-stroked-button
+          color="primary"
+          class="w-full mt-4"
+        >
+          View All Orders
+        </a>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Top Products / Categories -->
+    <mat-card class="!rounded-xl">
+      <mat-card-header class="!px-6 !pt-6">
+        <mat-card-title class="font-display text-lg">
+          @if (authService.isFarmer()) {
+            Top Products
+          } @else {
+            Popular Categories
+          }
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="!px-6 !pb-6">
+        <div class="space-y-4">
+          @for (item of topItems; track item.name) {
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-lg flex items-center justify-center text-xl"
+                [style.background]="item.bgColor"
+              >
+                {{ item.emoji }}
+              </div>
+              <div class="flex-1">
+                <p class="font-medium text-gray-900">{{ item.name }}</p>
+                <div class="flex items-center gap-2 mt-1">
+                  <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      class="h-full rounded-full"
+                      [style.width.%]="item.percentage"
+                      [style.background]="item.color"
+                    ></div>
+                  </div>
+                  <span class="text-xs text-gray-500">{{ item.percentage }}%</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Market Prices (Real-time) -->
+  <mat-card class="!rounded-xl">
+    <mat-card-header class="!px-6 !pt-6">
+      <mat-card-title class="font-display text-lg flex items-center gap-2">
+        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+        Live Market Prices
+      </mat-card-title>
+      <mat-card-subtitle>Updated in real-time from major mandis</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="!px-6 !pb-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        @for (price of marketPrices; track price.commodity) {
+          <div class="p-3 bg-gray-50 rounded-lg">
+            <div class="flex items-center gap-2 mb-2">
+              <span>{{ price.emoji }}</span>
+              <span class="font-medium text-sm text-gray-700">{{ price.commodity }}</span>
+            </div>
+            <p class="text-lg font-bold text-gray-900">₹{{ price.price }}</p>
+            <p
+              [class]="{
+                'text-green-600': price.change > 0,
+                'text-red-600': price.change < 0,
+                'text-gray-500': price.change === 0
+              }"
+              class="text-xs flex items-center gap-1"
+            >
+              @if (price.change > 0) {
+                <mat-icon class="!text-sm !w-4 !h-4">arrow_upward</mat-icon>
+              } @else if (price.change < 0) {
+                <mat-icon class="!text-sm !w-4 !h-4">arrow_downward</mat-icon>
+              }
+              {{ price.change > 0 ? '+' : '' }}{{ price.change }}%
+            </p>
+          </div>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+

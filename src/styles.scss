@@ -1,0 +1,615 @@
+/* ============================================
+   SMART MANDI CONNECT - Global Styles
+   A fresh, earthy, and modern marketplace UI
+   ============================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   CSS Custom Properties (Design Tokens)
+   ============================================ */
+:root {
+  /* Primary Colors - Mandi Green */
+  --smc-primary: #2d6a4f;
+  --smc-primary-light: #40916c;
+  --smc-primary-dark: #1b4332;
+  --smc-primary-contrast: #ffffff;
+
+  /* Accent Colors - Harvest Gold */
+  --smc-accent: #e9c46a;
+  --smc-accent-light: #f4d58d;
+  --smc-accent-dark: #d4a843;
+
+  /* Semantic Colors */
+  --smc-success: #22c55e;
+  --smc-warning: #f59e0b;
+  --smc-error: #ef4444;
+  --smc-info: #3b82f6;
+
+  /* Neutral Colors */
+  --smc-bg-primary: #fefae0;
+  --smc-bg-secondary: #ffffff;
+  --smc-bg-tertiary: #f8fafc;
+  --smc-text-primary: #1e293b;
+  --smc-text-secondary: #64748b;
+  --smc-text-muted: #94a3b8;
+  --smc-border: #e2e8f0;
+
+  /* Spacing */
+  --smc-space-xs: 0.25rem;
+  --smc-space-sm: 0.5rem;
+  --smc-space-md: 1rem;
+  --smc-space-lg: 1.5rem;
+  --smc-space-xl: 2rem;
+  --smc-space-2xl: 3rem;
+
+  /* Border Radius */
+  --smc-radius-sm: 0.375rem;
+  --smc-radius-md: 0.5rem;
+  --smc-radius-lg: 0.75rem;
+  --smc-radius-xl: 1rem;
+  --smc-radius-full: 9999px;
+
+  /* Shadows */
+  --smc-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --smc-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --smc-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --smc-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* Transitions */
+  --smc-transition-fast: 150ms ease;
+  --smc-transition-base: 300ms ease;
+  --smc-transition-slow: 500ms ease;
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Outfit", system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--smc-text-primary);
+  background-color: var(--smc-bg-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   Typography
+   ============================================ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 0.5em;
+  color: var(--smc-text-primary);
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+}
+h2 {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+}
+h3 {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+}
+h4 {
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+}
+h5 {
+  font-size: 1.125rem;
+}
+h6 {
+  font-size: 1rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--smc-primary);
+  text-decoration: none;
+  transition: color var(--smc-transition-fast);
+
+  &:hover {
+    color: var(--smc-primary-light);
+  }
+}
+
+/* ============================================
+   Angular Material Overrides
+   ============================================ */
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-flat-button {
+  font-family: "Outfit", system-ui, sans-serif !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.02em !important;
+  border-radius: var(--smc-radius-md) !important;
+}
+
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-flat-button.mat-primary {
+  background-color: var(--smc-primary) !important;
+
+  &:hover {
+    background-color: var(--smc-primary-light) !important;
+  }
+}
+
+.mat-mdc-form-field {
+  font-family: "Outfit", system-ui, sans-serif !important;
+}
+
+.mat-mdc-card {
+  border-radius: var(--smc-radius-lg) !important;
+  box-shadow: var(--smc-shadow-md) !important;
+}
+
+.mat-mdc-snack-bar-container {
+  border-radius: var(--smc-radius-md) !important;
+}
+
+/* ============================================
+   Custom Component Classes
+   ============================================ */
+@layer components {
+  /* Card Styles */
+  .smc-card {
+    @apply bg-white rounded-xl shadow-md p-4 md:p-6 transition-shadow duration-300;
+
+    &:hover {
+      @apply shadow-lg;
+    }
+  }
+
+  .smc-card-elevated {
+    @apply smc-card shadow-lg;
+
+    &:hover {
+      @apply shadow-xl;
+    }
+  }
+
+  /* Button Styles */
+  .smc-btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .smc-btn-primary {
+    @apply smc-btn bg-primary-700 text-white hover:bg-primary-600 focus:ring-primary-500;
+  }
+
+  .smc-btn-secondary {
+    @apply smc-btn bg-accent-400 text-earth-900 hover:bg-accent-300 focus:ring-accent-500;
+  }
+
+  .smc-btn-outline {
+    @apply smc-btn border-2 border-primary-700 text-primary-700 hover:bg-primary-50 focus:ring-primary-500;
+  }
+
+  .smc-btn-ghost {
+    @apply smc-btn text-primary-700 hover:bg-primary-50 focus:ring-primary-500;
+  }
+
+  /* Form Inputs */
+  .smc-input {
+    @apply w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  }
+
+  .smc-label {
+    @apply block text-sm font-medium text-gray-700 mb-1.5;
+  }
+
+  /* Badge Styles */
+  .smc-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .smc-badge-success {
+    @apply smc-badge bg-green-100 text-green-800;
+  }
+
+  .smc-badge-warning {
+    @apply smc-badge bg-amber-100 text-amber-800;
+  }
+
+  .smc-badge-error {
+    @apply smc-badge bg-red-100 text-red-800;
+  }
+
+  .smc-badge-info {
+    @apply smc-badge bg-blue-100 text-blue-800;
+  }
+
+  /* Container */
+  .smc-container {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Section */
+  .smc-section {
+    @apply py-8 md:py-12 lg:py-16;
+  }
+
+  /* Page Layout */
+  .smc-page {
+    @apply min-h-screen bg-mandi-cream;
+  }
+
+  /* Gradient Backgrounds */
+  .smc-gradient-primary {
+    @apply bg-gradient-to-br from-primary-700 via-primary-600 to-primary-800;
+  }
+
+  .smc-gradient-hero {
+    background: linear-gradient(
+      135deg,
+      var(--smc-primary-dark) 0%,
+      var(--smc-primary) 50%,
+      var(--smc-primary-light) 100%
+    );
+  }
+}
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+}
+
+/* ============================================
+   Scrollbar Styles
+   ============================================ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--smc-bg-tertiary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--smc-text-muted);
+  border-radius: var(--smc-radius-full);
+
+  &:hover {
+    background: var(--smc-text-secondary);
+  }
+}
+
+/* ============================================
+   Loading Spinner
+   ============================================ */
+.smc-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--smc-border);
+  border-top-color: var(--smc-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   Responsive Helpers
+   ============================================ */
+.hide-mobile {
+  @apply hidden sm:block;
+}
+
+.hide-desktop {
+  @apply block sm:hidden;
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   Accessibility Utilities
+   ============================================ */
+
+/** Screen Reader Only - Visually hidden but accessible */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/** Show on focus (for skip links) */
+.sr-only-focusable:focus,
+.sr-only-focusable:focus-visible {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  padding: inherit !important;
+  margin: inherit !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+}
+
+/** Focus visible ring for keyboard navigation */
+:focus-visible {
+  outline: 3px solid var(--smc-primary);
+  outline-offset: 2px;
+}
+
+/** Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/** High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --smc-primary: #004d40;
+    --smc-text-primary: #000000;
+    --smc-border: #000000;
+  }
+  
+  .smc-card,
+  .mat-mdc-card {
+    border: 2px solid var(--smc-border) !important;
+  }
+}
+
+/** Forced colors mode (Windows High Contrast) */
+@media (forced-colors: active) {
+  .smc-btn-primary,
+  .mat-mdc-raised-button.mat-primary {
+    forced-color-adjust: none;
+    background-color: Highlight !important;
+    color: HighlightText !important;
+  }
+}
+
+/* ============================================
+   Global Form Field Styling - Attractive Inputs
+   ============================================ */
+
+// Beautiful form fields
+.mat-mdc-form-field {
+  &.mat-form-field-appearance-outline {
+    .mat-mdc-text-field-wrapper {
+      background: #ffffff;
+      border-radius: 12px !important;
+    }
+
+    // Rounded outline corners
+    .mdc-notched-outline__leading {
+      border-radius: 12px 0 0 12px !important;
+      border-left-width: 1px !important;
+    }
+
+    .mdc-notched-outline__trailing {
+      border-radius: 0 12px 12px 0 !important;
+      border-right-width: 1px !important;
+    }
+
+    // Default border color
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #e0e0e0 !important;
+    }
+
+    // Hover state
+    &:not(.mat-focused):hover {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #bdbdbd !important;
+      }
+    }
+
+    // Focus state with glow
+    &.mat-focused {
+      .mat-mdc-text-field-wrapper {
+        box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.12);
+      }
+
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: var(--smc-primary) !important;
+        border-width: 2px !important;
+      }
+    }
+
+    // Error state
+    &.mat-form-field-invalid {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #ef5350 !important;
+      }
+
+      &.mat-focused .mat-mdc-text-field-wrapper {
+        box-shadow: 0 0 0 3px rgba(239, 83, 80, 0.12);
+      }
+    }
+  }
+}
+
+// Label styling
+.mat-mdc-form-field .mdc-floating-label {
+  font-weight: 500 !important;
+}
+
+.mat-mdc-form-field.mat-focused .mdc-floating-label {
+  color: var(--smc-primary) !important;
+}
+
+// Input text styling
+.mat-mdc-form-field .mat-mdc-input-element {
+  font-size: 0.9375rem !important;
+}
+
+// Error message styling
+.mat-mdc-form-field-error {
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+}
+
+// Select panel styling
+.mat-mdc-select-panel {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+  
+  .mat-mdc-option {
+    border-radius: 8px;
+    margin: 0.25rem 0.5rem;
+    
+    &.mdc-list-item--selected {
+      background: rgba(45, 106, 79, 0.12) !important;
+      color: var(--smc-primary) !important;
+    }
+  }
+}
+
+// Checkbox styling
+.mat-mdc-checkbox .mdc-checkbox__background {
+  border-radius: 6px !important;
+}
+
+.mat-mdc-checkbox.mat-mdc-checkbox-checked .mdc-checkbox__background {
+  background-color: var(--smc-primary) !important;
+  border-color: var(--smc-primary) !important;
+}
+
+// Datepicker toggle
+.mat-datepicker-toggle-default-icon {
+  color: #9e9e9e;
+}
+
+.mat-mdc-form-field.mat-focused .mat-datepicker-toggle-default-icon {
+  color: var(--smc-primary);
+}
+
+// Remove vertical line/divider from input fields - CLEAN INPUT STYLING
+.mat-mdc-form-field.mat-form-field-appearance-outline {
+  // Remove ALL notch borders (the vertical lines next to labels)
+  .mdc-notched-outline__notch {
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  // Keep only top/bottom borders on leading edge
+  .mdc-notched-outline__leading {
+    border-right: none !important;
+  }
+
+  // Keep only top/bottom borders on trailing edge
+  .mdc-notched-outline__trailing {
+    border-left: none !important;
+  }
+
+  // Remove all internal borders
+  .mat-mdc-form-field-infix {
+    border: none !important;
+  }
+
+  // Remove prefix/suffix divider lines
+  .mat-mdc-form-field-icon-prefix,
+  .mat-mdc-form-field-text-prefix {
+    border: none !important;
+    padding-right: 8px;
+  }
+
+  .mat-mdc-form-field-icon-suffix,
+  .mat-mdc-form-field-text-suffix {
+    border: none !important;
+    padding-left: 8px;
+  }
+}

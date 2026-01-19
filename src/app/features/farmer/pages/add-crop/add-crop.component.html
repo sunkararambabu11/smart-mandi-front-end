@@ -1,0 +1,298 @@
+<div class="add-crop-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <a routerLink="/farmer/dashboard" class="back-btn">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <div class="header-content">
+        <h1 class="page-title">Add Crop Listing</h1>
+        <p class="page-subtitle">List your harvest on the marketplace</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Form Card -->
+  <form [formGroup]="cropForm" (ngSubmit)="onSubmit()" class="crop-form">
+    <!-- Basic Info Section -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>eco</mat-icon>
+        <mat-card-title>Crop Details</mat-card-title>
+        <mat-card-subtitle>Basic information about your crop</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="form-grid">
+          <!-- Crop Name -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Crop Name</mat-label>
+            <input
+              matInput
+              formControlName="cropName"
+              placeholder="e.g., Organic Tomatoes"
+              maxlength="100"
+            />
+            <mat-icon matSuffix>grass</mat-icon>
+            <mat-hint>{{ f['cropName'].value?.length || 0 }}/100</mat-hint>
+            @if (submitted() && f['cropName'].errors) {
+              <mat-error>{{ getErrorMessage('cropName') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Category -->
+          <mat-form-field appearance="outline">
+            <mat-label>Category</mat-label>
+            <mat-select formControlName="category">
+              @for (category of categories(); track category.id) {
+                <mat-option [value]="category.name">
+                  <mat-icon>{{ category.icon }}</mat-icon>
+                  {{ category.name }} ({{ category.localName }})
+                </mat-option>
+              }
+            </mat-select>
+            @if (submitted() && f['category'].errors) {
+              <mat-error>{{ getErrorMessage('category') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Quality Grade -->
+          <mat-form-field appearance="outline">
+            <mat-label>Quality Grade</mat-label>
+            <mat-select formControlName="qualityGrade">
+              @for (grade of qualityGrades; track grade.value) {
+                <mat-option [value]="grade.value">
+                  {{ grade.label }}
+                </mat-option>
+              }
+            </mat-select>
+            @if (submitted() && f['qualityGrade'].errors) {
+              <mat-error>{{ getErrorMessage('qualityGrade') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Is Organic -->
+          <div class="checkbox-field">
+            <mat-checkbox formControlName="isOrganic" color="primary">
+              <span class="checkbox-label">
+                <mat-icon class="organic-icon">verified</mat-icon>
+                Organic Certified
+              </span>
+            </mat-checkbox>
+            <span class="checkbox-hint">Mark if your crop is organically grown</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Quantity & Price Section -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>scale</mat-icon>
+        <mat-card-title>Quantity & Pricing</mat-card-title>
+        <mat-card-subtitle>Set your quantity and expected price</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="form-grid">
+          <!-- Quantity -->
+          <mat-form-field appearance="outline">
+            <mat-label>Quantity</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="quantity"
+              placeholder="Enter quantity"
+              min="1"
+            />
+            @if (submitted() && f['quantity'].errors) {
+              <mat-error>{{ getErrorMessage('quantity') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Unit -->
+          <mat-form-field appearance="outline">
+            <mat-label>Unit</mat-label>
+            <mat-select formControlName="unit">
+              @for (unit of units; track unit.value) {
+                <mat-option [value]="unit.value">
+                  {{ unit.label }}
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Expected Price -->
+          <mat-form-field appearance="outline">
+            <mat-label>Expected Price (per unit)</mat-label>
+            <span matPrefix class="price-prefix">₹&nbsp;</span>
+            <input
+              matInput
+              type="number"
+              formControlName="expectedPrice"
+              placeholder="Enter price"
+              min="1"
+            />
+            @if (submitted() && f['expectedPrice'].errors) {
+              <mat-error>{{ getErrorMessage('expectedPrice') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Harvest Date -->
+          <mat-form-field appearance="outline">
+            <mat-label>Harvest Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="harvestDate"
+              [min]="today"
+              [max]="maxDate"
+            />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            @if (submitted() && f['harvestDate'].errors) {
+              <mat-error>{{ getErrorMessage('harvestDate') }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Price Summary -->
+        @if (f['quantity'].value && f['expectedPrice'].value) {
+          <div class="price-summary">
+            <mat-icon>calculate</mat-icon>
+            <span>
+              Total Value:
+              <strong>₹{{ f['quantity'].value * f['expectedPrice'].value | number }}</strong>
+              for {{ f['quantity'].value }} {{ f['unit'].value }}
+            </span>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Image Upload Section -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>photo_library</mat-icon>
+        <mat-card-title>Crop Images</mat-card-title>
+        <mat-card-subtitle>Upload up to {{ MAX_IMAGES }} images of your crop</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <!-- Drop Zone -->
+        @if (canAddMoreImages()) {
+          <div
+            class="drop-zone"
+            (dragover)="onDragOver($event)"
+            (drop)="onDrop($event)"
+            (click)="fileInput.click()"
+          >
+            <input
+              #fileInput
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              hidden
+              (change)="onFileSelected($event)"
+            />
+            <mat-icon>cloud_upload</mat-icon>
+            <p class="drop-text">Drag & drop images or click to browse</p>
+            <p class="drop-hint">
+              JPEG, PNG, WebP • Max 5MB each • {{ remainingImages() }} remaining
+            </p>
+          </div>
+        }
+
+        <!-- Image Previews -->
+        @if (imagePreviews().length > 0) {
+          <div class="image-previews">
+            @for (preview of imagePreviews(); track preview.name; let i = $index) {
+              <div class="image-preview">
+                <img [src]="preview.url" [alt]="preview.name" />
+                <div class="preview-overlay">
+                  <button
+                    type="button"
+                    mat-icon-button
+                    class="remove-btn"
+                    (click)="removeImage(i)"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+                <div class="preview-info">
+                  <span class="preview-name">{{ preview.name }}</span>
+                  <span class="preview-size">{{ preview.size }}</span>
+                </div>
+                @if (preview.uploading) {
+                  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <!-- No Images Warning -->
+        @if (imagePreviews().length === 0 && submitted()) {
+          <div class="no-images-warning">
+            <mat-icon>warning</mat-icon>
+            <span>Please upload at least one image</span>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Description Section -->
+    <mat-card class="form-section">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>description</mat-icon>
+        <mat-card-title>Additional Details</mat-card-title>
+        <mat-card-subtitle>Optional description for your listing</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            formControlName="description"
+            placeholder="Describe your crop quality, growing conditions, etc."
+            rows="4"
+            maxlength="500"
+          ></textarea>
+          <mat-hint>{{ f['description'].value?.length || 0 }}/500</mat-hint>
+          @if (submitted() && f['description'].errors) {
+            <mat-error>{{ getErrorMessage('description') }}</mat-error>
+          }
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button
+        type="button"
+        mat-stroked-button
+        class="reset-btn"
+        (click)="onReset()"
+        [disabled]="isSubmitting()"
+      >
+        <mat-icon>refresh</mat-icon>
+        Reset
+      </button>
+      <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        class="submit-btn"
+        [disabled]="isSubmitting()"
+      >
+        @if (isSubmitting()) {
+          <mat-spinner diameter="20"></mat-spinner>
+          <span>Creating...</span>
+        } @else {
+          <mat-icon>add_circle</mat-icon>
+          <span>Create Listing</span>
+        }
+      </button>
+    </div>
+  </form>
+</div>
+
+
+

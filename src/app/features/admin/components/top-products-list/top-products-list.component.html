@@ -1,0 +1,24 @@
+<div class="products-list">
+  @for (product of products(); track product.id; let i = $index) {
+    <div class="product-item">
+      <span class="rank">{{ i + 1 }}</span>
+      <div class="product-image">
+        @if (product.imageUrl) {
+          <img [src]="product.imageUrl" [alt]="product.name" />
+        } @else {
+          <mat-icon>inventory_2</mat-icon>
+        }
+      </div>
+      <div class="product-info">
+        <span class="product-name">{{ product.name }}</span>
+        <span class="product-category">{{ product.category }}</span>
+      </div>
+      <div class="product-stats">
+        <span class="revenue">{{ product.revenue | currency:'INR':'symbol':'1.0-0' }}</span>
+        <span class="orders">{{ product.ordersCount }} orders</span>
+      </div>
+    </div>
+  }
+</div>
+
+

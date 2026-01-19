@@ -1,0 +1,107 @@
+<div class="otp-page">
+  <!-- Background Pattern -->
+  <div class="background-pattern"></div>
+
+  <!-- OTP Container -->
+  <div class="otp-container">
+    <!-- Back Button -->
+    <button class="back-btn" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      <span>Back</span>
+    </button>
+
+    <!-- OTP Card -->
+    <div class="otp-card">
+      <!-- Header -->
+      <div class="card-header">
+        <div class="otp-icon">
+          <mat-icon>lock</mat-icon>
+        </div>
+        <h2>Verify OTP</h2>
+        <p>
+          We've sent a 6-digit code to
+          <strong>{{ formattedPhone() }}</strong>
+        </p>
+      </div>
+
+      <!-- OTP Form -->
+      <form [formGroup]="otpForm" (ngSubmit)="onSubmit()" class="otp-form">
+        <!-- OTP Inputs -->
+        <div class="otp-inputs" formArrayName="digits">
+          @for (digit of digitsArray.controls; track $index) {
+            <input
+              #otpInput
+              type="text"
+              inputmode="numeric"
+              maxlength="1"
+              class="otp-input"
+              [formControlName]="$index"
+              [class.filled]="digit.value"
+              [class.error]="authService.error()"
+              (input)="onDigitInput($event, $index)"
+              (keydown)="onKeyDown($event, $index)"
+              (paste)="onPaste($event)"
+              autocomplete="one-time-code"
+            />
+          }
+        </div>
+
+        <!-- Error Message -->
+        @if (authService.error()) {
+          <div class="error-message">
+            <mat-icon>error</mat-icon>
+            <span>{{ authService.error() }}</span>
+          </div>
+        }
+
+        <!-- Timer / Resend -->
+        <div class="timer-section">
+          @if (!canResend()) {
+            <p class="timer-text">
+              <mat-icon>schedule</mat-icon>
+              Resend OTP in
+              <span class="countdown">{{ formattedCountdown() }}</span>
+            </p>
+          } @else {
+            <button
+              type="button"
+              class="resend-btn"
+              (click)="onResend()"
+              [disabled]="authService.isLoading()"
+            >
+              <mat-icon>refresh</mat-icon>
+              Resend OTP
+            </button>
+          }
+        </div>
+
+        <!-- Verify Button -->
+        <button
+          type="submit"
+          class="verify-btn"
+          [disabled]="!otpComplete() || authService.isLoading()"
+        >
+          @if (authService.isLoading()) {
+            <mat-spinner diameter="20"></mat-spinner>
+            <span>Verifying...</span>
+          } @else {
+            <span>Verify & Continue</span>
+            <mat-icon>check_circle</mat-icon>
+          }
+        </button>
+      </form>
+
+      <!-- Help Text -->
+      <div class="help-section">
+        <p>Didn't receive the code?</p>
+        <ul>
+          <li>Check if the number is correct</li>
+          <li>Make sure you have network connectivity</li>
+          <li>Wait for the timer to resend</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+

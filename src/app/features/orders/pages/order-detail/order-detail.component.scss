@@ -1,0 +1,24 @@
+.order-detail-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+h1 {
+  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--smc-text-primary);
+  margin: 0 0 1.5rem;
+}
+
+.order-card {
+  border-radius: 1rem !important;
+  padding: 1.5rem !important;
+  
+  p {
+    color: var(--smc-text-secondary);
+    margin: 0;
+  }
+}
+

@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  height: 100vh;
+}
+
+mat-sidenav {
+  background: white;
+}
+
+mat-sidenav-content {
+  display: flex;
+  flex-direction: column;
+}
+
+

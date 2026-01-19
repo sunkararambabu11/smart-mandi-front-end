@@ -1,0 +1,10 @@
+<a
+  class="skip-link"
+  [href]="'#' + targetId()"
+  [class.visible]="isVisible()"
+  (focus)="onFocus()"
+  (blur)="onBlur()"
+  (click)="onClick($event)">
+  {{ label() }}
+</a>
+

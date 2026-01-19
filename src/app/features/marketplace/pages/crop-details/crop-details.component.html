@@ -1,0 +1,316 @@
+<!-- Crop Details Page -->
+<div class="crop-details-page">
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Loading crop details...</p>
+    </div>
+  } @else if (error()) {
+    <!-- Error State -->
+    <div class="error-container">
+      <mat-icon>error_outline</mat-icon>
+      <h2>Something went wrong</h2>
+      <p>{{ error() }}</p>
+      <button mat-flat-button color="primary" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Marketplace
+      </button>
+    </div>
+  } @else if (crop(); as cropData) {
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a routerLink="/marketplace">Marketplace</a>
+      <mat-icon>chevron_right</mat-icon>
+      <a [routerLink]="['/marketplace']" [queryParams]="{category: cropData.category}">
+        {{ cropData.category }}
+      </a>
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{ cropData.cropName }}</span>
+    </nav>
+
+    <div class="content-grid">
+      <!-- Left Column: Images -->
+      <div class="images-column">
+        <smc-image-gallery
+          [images]="images()"
+          [selectedIndex]="selectedImageIndex()"
+          (imageSelect)="onImageSelect($event)"
+        />
+
+        <!-- Certifications -->
+        @if (cropData.certifications.length > 0) {
+          <div class="certifications">
+            <h4>Certifications</h4>
+            <div class="cert-list">
+              @for (cert of cropData.certifications; track cert) {
+                <div class="cert-badge">
+                  <mat-icon>verified</mat-icon>
+                  {{ cert }}
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Middle Column: Details -->
+      <div class="details-column">
+        <!-- Header -->
+        <div class="crop-header">
+          <div class="header-badges">
+            @if (cropData.isFeatured) {
+              <span class="badge featured">
+                <mat-icon>star</mat-icon>
+                Featured
+              </span>
+            }
+            @if (cropData.isOrganic) {
+              <span class="badge organic">
+                <mat-icon>eco</mat-icon>
+                Organic
+              </span>
+            }
+            <span class="badge quality" [ngClass]="qualityClass()">
+              {{ qualityLabel() }}
+            </span>
+          </div>
+
+          <div class="header-actions">
+            <button
+              mat-icon-button
+              (click)="toggleWishlist()"
+              [matTooltip]="isWishlisted() ? 'Remove from Wishlist' : 'Add to Wishlist'"
+            >
+              <mat-icon [class.wishlisted]="isWishlisted()">
+                {{ isWishlisted() ? 'favorite' : 'favorite_border' }}
+              </mat-icon>
+            </button>
+            <button mat-icon-button (click)="shareCrop()" matTooltip="Share">
+              <mat-icon>share</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <h1 class="crop-name">{{ cropData.cropName }}</h1>
+        <p class="category">{{ cropData.category }}</p>
+
+        <!-- Price Section -->
+        <div class="price-section">
+          <div class="price-main">
+            <span class="label">Base Price</span>
+            <span class="price">₹{{ cropData.price }}<small>/{{ cropData.unit }}</small></span>
+          </div>
+          <div class="price-instant">
+            <span class="label">Instant Buy</span>
+            <span class="price highlight">₹{{ cropData.instantBuyPrice }}<small>/{{ cropData.unit }}</small></span>
+          </div>
+        </div>
+
+        <!-- Quantity & Availability -->
+        <div class="availability-section">
+          <div class="stat">
+            <mat-icon>inventory_2</mat-icon>
+            <div>
+              <span class="value">{{ cropData.availableQuantity }} {{ cropData.unit }}</span>
+              <span class="label">Available</span>
+            </div>
+          </div>
+          <div class="stat">
+            <mat-icon>event</mat-icon>
+            <div>
+              <span class="value">
+                @if (daysUntilHarvest() <= 0) {
+                  Ready Now
+                } @else {
+                  {{ daysUntilHarvest() }} days
+                }
+              </span>
+              <span class="label">Until Harvest</span>
+            </div>
+          </div>
+          <div class="stat">
+            <mat-icon>visibility</mat-icon>
+            <div>
+              <span class="value">{{ cropData.viewCount }}</span>
+              <span class="label">Views</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="description-section">
+          <h3>Description</h3>
+          <p>{{ cropData.description }}</p>
+        </div>
+
+        <!-- Specifications -->
+        <div class="specs-section">
+          <h3>Specifications</h3>
+          <div class="specs-grid">
+            @for (spec of cropData.specifications | keyvalue; track spec.key) {
+              <div class="spec-item">
+                <span class="spec-label">{{ spec.key }}</span>
+                <span class="spec-value">{{ spec.value }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Shipping Info -->
+        <div class="shipping-section">
+          <h3>Shipping & Delivery</h3>
+          <div class="shipping-options">
+            @if (cropData.shippingInfo.availableForPickup) {
+              <div class="shipping-option">
+                <mat-icon>store</mat-icon>
+                <span>Available for Pickup</span>
+              </div>
+            }
+            @if (cropData.shippingInfo.availableForDelivery) {
+              <div class="shipping-option">
+                <mat-icon>local_shipping</mat-icon>
+                <span>Delivery within {{ cropData.shippingInfo.deliveryRadius }}km</span>
+              </div>
+              <div class="shipping-option">
+                <mat-icon>schedule</mat-icon>
+                <span>Est. {{ cropData.shippingInfo.estimatedDeliveryDays }} days delivery</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Actions & Farmer -->
+      <div class="actions-column">
+        <!-- Bid Card -->
+        <mat-card class="bid-card">
+          <div class="bid-header">
+            <h3>Place Your Bid</h3>
+            @if (isBiddingOpen()) {
+              <span class="time-remaining">
+                <mat-icon>timer</mat-icon>
+                {{ biddingTimeRemaining() }} left
+              </span>
+            } @else {
+              <span class="time-remaining closed">Bidding Closed</span>
+            }
+          </div>
+
+          <!-- Bid Stats -->
+          @if (bidInfo(); as info) {
+            <div class="bid-stats">
+              <div class="stat">
+                <span class="value">₹{{ info.highestBid }}</span>
+                <span class="label">Highest Bid</span>
+              </div>
+              <div class="stat">
+                <span class="value">{{ info.totalBids }}</span>
+                <span class="label">Total Bids</span>
+              </div>
+              <div class="stat">
+                <span class="value">₹{{ info.averageBid }}</span>
+                <span class="label">Average</span>
+              </div>
+            </div>
+          }
+
+          <!-- Bid Form -->
+          @if (showBidForm()) {
+            <form [formGroup]="bidForm" (ngSubmit)="onSubmitBid()" class="bid-form">
+              <mat-form-field appearance="outline">
+                <mat-label>Bid Amount (₹/{{ cropData.unit }})</mat-label>
+                <input matInput type="number" formControlName="amount" />
+                <span matPrefix>₹&nbsp;</span>
+                <mat-hint>Min: ₹{{ cropData.minBidPrice }}</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Quantity ({{ cropData.unit }})</mat-label>
+                <input matInput type="number" formControlName="quantity" />
+                <mat-hint>Max: {{ cropData.availableQuantity }} {{ cropData.unit }}</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Message (Optional)</mat-label>
+                <textarea matInput formControlName="message" rows="2"></textarea>
+              </mat-form-field>
+
+              <div class="bid-total">
+                <span>Total Value:</span>
+                <span class="total-amount">₹{{ bidTotal() | number:'1.0-0' }}</span>
+              </div>
+
+              <div class="bid-actions">
+                <button mat-button type="button" (click)="closeBidForm()">Cancel</button>
+                <button
+                  mat-flat-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="isSubmitting() || bidForm.invalid"
+                >
+                  @if (isSubmitting()) {
+                    <mat-spinner diameter="20"></mat-spinner>
+                  } @else {
+                    <mat-icon>gavel</mat-icon>
+                    Submit Bid
+                  }
+                </button>
+              </div>
+            </form>
+          } @else {
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <button
+                mat-flat-button
+                color="primary"
+                class="bid-btn"
+                (click)="openBidForm()"
+                [disabled]="!isBiddingOpen()"
+              >
+                <mat-icon>gavel</mat-icon>
+                Place Bid
+              </button>
+
+              <button
+                mat-flat-button
+                color="accent"
+                class="buy-btn"
+                (click)="openInstantBuy()"
+              >
+                <mat-icon>flash_on</mat-icon>
+                Instant Buy @ ₹{{ cropData.instantBuyPrice }}
+              </button>
+            </div>
+          }
+        </mat-card>
+
+        <!-- Farmer Card -->
+        <smc-farmer-card
+          [farmer]="farmer()!"
+          (viewProfile)="viewFarmerProfile()"
+          (contact)="contactFarmer()"
+        />
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <button mat-stroked-button (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Back to Marketplace
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Processing Overlay -->
+  @if (isSubmitting()) {
+    <div class="processing-overlay">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Processing...</p>
+    </div>
+  }
+</div>
+
+
+

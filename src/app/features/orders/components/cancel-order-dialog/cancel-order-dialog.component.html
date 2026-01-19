@@ -1,0 +1,65 @@
+<div class="cancel-dialog">
+  <div class="dialog-header">
+    <div class="icon-wrapper">
+      <mat-icon>cancel</mat-icon>
+    </div>
+    <h2>Cancel Order?</h2>
+    <p class="order-number">{{ data.order.orderNumber }}</p>
+  </div>
+
+  <mat-dialog-content>
+    <div class="order-summary">
+      <span class="item-name">{{ data.order.items[0].cropName }}</span>
+      <span class="amount">₹{{ data.order.totalAmount | number:'1.0-0' }}</span>
+    </div>
+
+    <div class="reason-section">
+      <p class="label">Please select a reason for cancellation:</p>
+      
+      <mat-radio-group [(ngModel)]="selectedReason" class="reason-options">
+        @for (reason of cancelReasons; track reason.value) {
+          <mat-radio-button [value]="reason.value">
+            {{ reason.label }}
+          </mat-radio-button>
+        }
+      </mat-radio-group>
+
+      @if (selectedReason === 'other') {
+        <mat-form-field appearance="outline" class="custom-reason">
+          <mat-label>Please specify</mat-label>
+          <textarea 
+            matInput 
+            [(ngModel)]="customReason"
+            rows="2"
+            placeholder="Enter your reason..."
+            maxlength="200">
+          </textarea>
+          <mat-hint align="end">{{ customReason.length }}/200</mat-hint>
+        </mat-form-field>
+      }
+    </div>
+
+    <div class="warning">
+      <mat-icon>warning</mat-icon>
+      <p>
+        This action cannot be undone. 
+        @if (data.order.paymentStatus === 'PAID') {
+          A refund will be initiated to your original payment method.
+        }
+      </p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Keep Order</button>
+    <button 
+      mat-flat-button 
+      color="warn" 
+      (click)="onConfirm()"
+      [disabled]="!selectedReason || (selectedReason === 'other' && !customReason.trim())">
+      <mat-icon>cancel</mat-icon>
+      Cancel Order
+    </button>
+  </mat-dialog-actions>
+</div>
+

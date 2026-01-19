@@ -1,0 +1,588 @@
+/**
+ * Crop Details Page Styles
+ */
+
+.crop-details-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8faf8 0%, #e8f5e9 100%);
+  padding: 1rem;
+
+  @media (min-width: 768px) {
+    padding: 1.5rem 2rem;
+  }
+}
+
+// ============================================
+// Loading & Error States
+// ============================================
+
+.loading-container,
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1rem;
+  text-align: center;
+
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    color: #ccc;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0;
+  }
+
+  p {
+    color: #666;
+    margin: 0;
+  }
+}
+
+// ============================================
+// Breadcrumb
+// ============================================
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  flex-wrap: wrap;
+
+  a {
+    color: #666;
+    text-decoration: none;
+
+    &:hover {
+      color: #1b5e20;
+      text-decoration: underline;
+    }
+  }
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #999;
+  }
+
+  span {
+    color: #333;
+    font-weight: 500;
+  }
+}
+
+// ============================================
+// Content Grid
+// ============================================
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: 400px 1fr 360px;
+  }
+}
+
+// ============================================
+// Images Column
+// ============================================
+
+.images-column {
+  @media (min-width: 768px) {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 1200px) {
+    grid-column: 1;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+}
+
+.certifications {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+
+  h4 {
+    margin: 0 0 0.75rem;
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  .cert-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .cert-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    background: #e8f5e9;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #2e7d32;
+
+    mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+// ============================================
+// Details Column
+// ============================================
+
+.details-column {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
+}
+
+.crop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.header-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+
+  &.featured {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: white;
+  }
+
+  &.organic {
+    background: #4caf50;
+    color: white;
+  }
+
+  &.quality {
+    &.premium {
+      background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+      color: white;
+    }
+
+    &.grade-a {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+
+    &.grade-b {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    &.standard {
+      background: #f5f5f5;
+      color: #757575;
+    }
+  }
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.25rem;
+
+  .wishlisted {
+    color: #e91e63;
+  }
+}
+
+.crop-name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1b5e20;
+  margin: 0 0 0.25rem;
+
+  @media (min-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+.category {
+  font-size: 1rem;
+  color: #666;
+  margin: 0 0 1.5rem;
+}
+
+// ============================================
+// Price Section
+// ============================================
+
+.price-section {
+  display: flex;
+  gap: 2rem;
+  padding: 1.25rem;
+  background: #f5f5f5;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+
+  .price-main,
+  .price-instant {
+    .label {
+      display: block;
+      font-size: 0.75rem;
+      color: #666;
+      margin-bottom: 0.25rem;
+    }
+
+    .price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #333;
+
+      small {
+        font-size: 0.875rem;
+        font-weight: 400;
+        color: #666;
+      }
+    }
+  }
+
+  .price-instant .price.highlight {
+    color: #1b5e20;
+  }
+}
+
+// ============================================
+// Availability Section
+// ============================================
+
+.availability-section {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    mat-icon {
+      color: #1b5e20;
+    }
+
+    .value {
+      display: block;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .label {
+      display: block;
+      font-size: 0.75rem;
+      color: #666;
+    }
+  }
+}
+
+// ============================================
+// Section Styles
+// ============================================
+
+.description-section,
+.specs-section,
+.shipping-section {
+  margin-bottom: 1.5rem;
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  p {
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+    white-space: pre-line;
+  }
+}
+
+// ============================================
+// Specifications Grid
+// ============================================
+
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.spec-item {
+  padding: 0.75rem;
+  background: #fafafa;
+  border-radius: 8px;
+
+  .spec-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+  }
+
+  .spec-value {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #333;
+  }
+}
+
+// ============================================
+// Shipping Options
+// ============================================
+
+.shipping-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.shipping-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #555;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #1b5e20;
+  }
+}
+
+// ============================================
+// Actions Column
+// ============================================
+
+.actions-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (min-width: 1200px) {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+}
+
+// ============================================
+// Bid Card
+// ============================================
+
+.bid-card {
+  padding: 1.5rem;
+  border-radius: 16px;
+
+  .bid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    h3 {
+      margin: 0;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .time-remaining {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.875rem;
+      color: #f57c00;
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+
+      &.closed {
+        color: #999;
+      }
+    }
+  }
+}
+
+.bid-stats {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+
+  .stat {
+    text-align: center;
+
+    .value {
+      display: block;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1b5e20;
+    }
+
+    .label {
+      font-size: 0.75rem;
+      color: #666;
+    }
+  }
+}
+
+.bid-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.bid-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  border-radius: 12px;
+
+  .total-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1b5e20;
+  }
+}
+
+.bid-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+
+  button {
+    min-width: 100px;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  button {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+
+  .buy-btn {
+    background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+  }
+}
+
+// ============================================
+// Quick Actions
+// ============================================
+
+.quick-actions {
+  button {
+    width: 100%;
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+// ============================================
+// Processing Overlay
+// ============================================
+
+.processing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 1000;
+
+  p {
+    color: #666;
+    font-size: 0.875rem;
+  }
+}
+
+
+

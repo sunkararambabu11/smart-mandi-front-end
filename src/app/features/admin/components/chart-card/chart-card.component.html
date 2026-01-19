@@ -1,0 +1,30 @@
+<mat-card class="chart-card">
+  <div class="chart-header">
+    <div class="chart-title">
+      <h3>{{ title() }}</h3>
+      @if (subtitle()) {
+        <span class="subtitle">{{ subtitle() }}</span>
+      }
+    </div>
+    <div class="chart-actions">
+      <button mat-icon-button [matMenuTriggerFor]="chartMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #chartMenu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>download</mat-icon>
+          Export PNG
+        </button>
+        <button mat-menu-item>
+          <mat-icon>table_chart</mat-icon>
+          View Data
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+  <div class="chart-container">
+    <canvas #chartCanvas></canvas>
+  </div>
+</mat-card>
+
+

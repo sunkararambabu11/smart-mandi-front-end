@@ -1,0 +1,167 @@
+<mat-card
+  class="crop-card"
+  [class]="variantClass()"
+  [class.clickable]="clickable()"
+  matRipple
+  [matRippleDisabled]="!clickable()"
+  (click)="onCardClick()"
+  (keydown.enter)="onCardClick()"
+  (keydown.space)="onCardClick(); $event.preventDefault()"
+  [attr.tabindex]="clickable() ? 0 : null"
+  [attr.role]="clickable() ? 'button' : 'article'"
+  [attr.aria-label]="cardAriaLabel()">
+  <!-- Image Section -->
+  <div class="crop-image">
+    @if (crop().imageUrl || crop().images?.[0]) {
+      <img
+        [src]="crop().imageUrl || crop().images?.[0]"
+        [alt]="crop().name"
+        loading="lazy" />
+    } @else {
+      <div class="image-placeholder">
+        <mat-icon>eco</mat-icon>
+      </div>
+    }
+
+    <!-- Badges -->
+    <div class="image-badges">
+      @if (crop().isOrganic) {
+        <span class="organic-badge">
+          <mat-icon>eco</mat-icon>
+          Organic
+        </span>
+      }
+      @if (crop().quality) {
+        <span class="quality-badge" [class]="'grade-' + crop().quality?.toLowerCase()">
+          Grade {{ crop().quality }}
+        </span>
+      }
+    </div>
+
+    <!-- Status Overlay -->
+    @if (crop().status && crop().status !== 'ACTIVE') {
+      <div class="status-overlay" [class]="crop().status?.toLowerCase()">
+        {{ crop().status }}
+      </div>
+    }
+
+    <!-- Wishlist Button -->
+    @if (showWishlist()) {
+      <button
+        class="wishlist-btn"
+        mat-icon-button
+        (click)="onWishlistToggle($event)"
+        [matTooltip]="isWishlisted() ? 'Remove from wishlist' : 'Add to wishlist'">
+        <mat-icon>{{ isWishlisted() ? 'favorite' : 'favorite_border' }}</mat-icon>
+      </button>
+    }
+  </div>
+
+  <!-- Content Section -->
+  <div class="crop-content">
+    <!-- Category -->
+    @if (crop().category && variant() !== 'compact') {
+      <span class="crop-category">{{ crop().category }}</span>
+    }
+
+    <!-- Name -->
+    <h3 class="crop-name">{{ crop().name }}</h3>
+
+    <!-- Quantity & Location -->
+    <div class="crop-meta">
+      <span class="quantity">
+        <mat-icon>scale</mat-icon>
+        {{ crop().quantity }} {{ crop().unit }}
+      </span>
+      @if (crop().location && variant() !== 'compact') {
+        <span class="location">
+          <mat-icon>location_on</mat-icon>
+          {{ crop().location }}
+        </span>
+      }
+    </div>
+
+    <!-- Price -->
+    <div class="crop-price">
+      <smc-price-badge
+        [price]="crop().price"
+        [originalPrice]="crop().originalPrice"
+        [unit]="crop().unit"
+        [size]="variant() === 'compact' ? 'small' : 'medium'" />
+    </div>
+
+    <!-- Farmer Info (for detailed variant) -->
+    @if (variant() === 'detailed' && crop().farmer) {
+      <div class="farmer-info">
+        <div class="farmer-avatar">
+          @if (crop().farmer?.avatar) {
+            <img [src]="crop().farmer?.avatar" [alt]="crop().farmer?.name" />
+          } @else {
+            {{ crop().farmer?.name?.charAt(0) }}
+          }
+        </div>
+        <div class="farmer-details">
+          <span class="farmer-name">{{ crop().farmer?.name }}</span>
+          @if (crop().farmer?.rating) {
+            <span class="farmer-rating">
+              <mat-icon>star</mat-icon>
+              {{ crop().farmer?.rating }}
+            </span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Stats (for detailed variant) -->
+    @if (variant() === 'detailed') {
+      <div class="crop-stats">
+        @if (crop().bidsCount !== undefined) {
+          <span class="stat">
+            <mat-icon>gavel</mat-icon>
+            {{ crop().bidsCount }} bids
+          </span>
+        }
+        @if (crop().viewsCount !== undefined) {
+          <span class="stat">
+            <mat-icon>visibility</mat-icon>
+            {{ crop().viewsCount }} views
+          </span>
+        }
+      </div>
+    }
+
+    <!-- Harvest Date -->
+    @if (crop().harvestDate && variant() !== 'compact') {
+      <div class="harvest-date">
+        <mat-icon>event</mat-icon>
+        Harvested {{ crop().harvestDate | date:'mediumDate' }}
+      </div>
+    }
+  </div>
+
+  <!-- Actions -->
+  @if (showActions()) {
+    <div class="crop-actions">
+      @if (actionType() === 'buyer') {
+        <button mat-stroked-button color="primary" (click)="onBid($event)">
+          <mat-icon>gavel</mat-icon>
+          Place Bid
+        </button>
+        <button mat-flat-button color="primary" (click)="onBuyNow($event)">
+          <mat-icon>shopping_cart</mat-icon>
+          Buy Now
+        </button>
+      } @else {
+        <button mat-stroked-button (click)="onEdit($event)">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+        <button mat-stroked-button color="primary" (click)="onViewBids($event)">
+          <mat-icon>gavel</mat-icon>
+          View Bids
+        </button>
+      }
+    </div>
+  }
+</mat-card>
+

@@ -1,0 +1,399 @@
+/**
+ * Marketplace Crop Card Styles
+ */
+
+.crop-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  &.featured {
+    border: 2px solid #ffc107;
+    box-shadow: 0 4px 20px rgba(255, 193, 7, 0.15);
+  }
+
+  // List View Mode
+  &.list-view {
+    flex-direction: row;
+    height: auto;
+
+    .image-section {
+      width: 200px;
+      min-height: 200px;
+      flex-shrink: 0;
+    }
+
+    .content-section {
+      flex: 1;
+      padding: 1rem 1.25rem;
+    }
+
+    @media (max-width: 600px) {
+      flex-direction: column;
+
+      .image-section {
+        width: 100%;
+        min-height: 180px;
+      }
+    }
+  }
+}
+
+// ============================================
+// Featured Badge
+// ============================================
+
+.featured-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 20px;
+  z-index: 2;
+
+  mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// ============================================
+// Image Section
+// ============================================
+
+.image-section {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #f5f5f5;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .crop-card:hover & img {
+    transform: scale(1.05);
+  }
+}
+
+.wishlist-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 2;
+
+  mat-icon {
+    color: #e91e63;
+  }
+
+  &:hover {
+    background: white;
+  }
+}
+
+.organic-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: #4caf50;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 20px;
+
+  mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.quality-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 20px;
+
+  &.premium {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+    color: white;
+  }
+
+  &.grade-a {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+
+  &.grade-b {
+    background: #fff3e0;
+    color: #f57c00;
+  }
+
+  &.standard {
+    background: #f5f5f5;
+    color: #757575;
+  }
+}
+
+// ============================================
+// Content Section
+// ============================================
+
+.content-section {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+
+  .category {
+    color: #1b5e20;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .location {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: #666;
+
+    mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+.crop-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+
+  .price {
+    .amount {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1b5e20;
+    }
+
+    .unit {
+      font-size: 0.875rem;
+      color: #666;
+    }
+  }
+
+  .quantity {
+    font-size: 0.8125rem;
+    color: #666;
+  }
+}
+
+// ============================================
+// Farmer Row
+// ============================================
+
+.farmer-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+
+  &:hover .farmer-name {
+    color: #1b5e20;
+  }
+}
+
+.farmer-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #81c784 0%, #4caf50 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  span {
+    color: white;
+    font-weight: 600;
+    font-size: 0.8125rem;
+  }
+}
+
+.farmer-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.farmer-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #333;
+  transition: color 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.farmer-rating {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+
+  .star {
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+
+    &.filled {
+      color: #ffc107;
+    }
+
+    &.half {
+      color: #ffc107;
+    }
+
+    &.empty {
+      color: #e0e0e0;
+    }
+  }
+
+  .rating-value {
+    margin-left: 4px;
+    font-size: 0.75rem;
+    color: #666;
+  }
+}
+
+// ============================================
+// Harvest Row
+// ============================================
+
+.harvest-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  color: #666;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &.ready {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.soon {
+    background: #fff3e0;
+    color: #e65100;
+  }
+}
+
+// ============================================
+// Stats Row
+// ============================================
+
+.stats-row {
+  display: flex;
+  gap: 1rem;
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: #999;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+// ============================================
+// Actions Row
+// ============================================
+
+.actions-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+
+  button {
+    flex: 1;
+    min-width: auto;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+    }
+  }
+}
+
+
+

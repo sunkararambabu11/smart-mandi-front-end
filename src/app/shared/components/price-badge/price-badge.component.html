@@ -1,0 +1,24 @@
+<div class="price-badge" [class]="classes()">
+  <!-- Main Price -->
+  <span class="current-price">
+    {{ price() | currency:'INR':'symbol':'1.0-0' }}
+    @if (unit()) {
+      <span class="unit">/{{ unit() }}</span>
+    }
+  </span>
+
+  <!-- Original Price (if discounted) -->
+  @if (originalPrice() && originalPrice()! > price()) {
+    <span class="original-price">
+      {{ originalPrice() | currency:'INR':'symbol':'1.0-0' }}
+    </span>
+  }
+
+  <!-- Discount Badge -->
+  @if (discountPercent() > 0) {
+    <span class="discount-badge">
+      -{{ discountPercent() }}%
+    </span>
+  }
+</div>
+

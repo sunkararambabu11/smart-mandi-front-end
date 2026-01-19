@@ -1,0 +1,460 @@
+<div class="admin-settings-page">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Admin Settings</h1>
+      <p>Configure platform settings and preferences</p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button (click)="resetToDefaults()">
+        <mat-icon>restore</mat-icon>
+        Reset to Defaults
+      </button>
+      <button mat-raised-button color="primary" (click)="saveSettings()" [disabled]="isSaving()">
+        @if (isSaving()) {
+          <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+        } @else {
+          <mat-icon>save</mat-icon>
+        }
+        Save Changes
+      </button>
+    </div>
+  </header>
+
+  <div class="settings-layout">
+    <!-- Sidebar Navigation -->
+    <nav class="settings-nav">
+      <button 
+        class="nav-item" 
+        [class.active]="selectedTab() === 0"
+        (click)="selectedTab.set(0)">
+        <mat-icon>settings</mat-icon>
+        <span>General</span>
+      </button>
+      <button 
+        class="nav-item" 
+        [class.active]="selectedTab() === 1"
+        (click)="selectedTab.set(1)">
+        <mat-icon>payments</mat-icon>
+        <span>Commission & Payments</span>
+      </button>
+      <button 
+        class="nav-item" 
+        [class.active]="selectedTab() === 2"
+        (click)="selectedTab.set(2)">
+        <mat-icon>notifications</mat-icon>
+        <span>Notifications</span>
+      </button>
+      <button 
+        class="nav-item" 
+        [class.active]="selectedTab() === 3"
+        (click)="selectedTab.set(3)">
+        <mat-icon>security</mat-icon>
+        <span>Security</span>
+      </button>
+    </nav>
+
+    <!-- Settings Content -->
+    <div class="settings-content">
+      <!-- General Settings -->
+      @if (selectedTab() === 0) {
+        <mat-card class="settings-card">
+          <div class="card-header">
+            <mat-icon>info</mat-icon>
+            <h2>Site Information</h2>
+          </div>
+          <div class="form-content">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Site Name</mat-label>
+              <input 
+                matInput 
+                [ngModel]="platformSettings().siteName"
+                (ngModelChange)="updatePlatformSetting('siteName', $event)" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Site Description</mat-label>
+              <textarea 
+                matInput 
+                rows="3"
+                [ngModel]="platformSettings().siteDescription"
+                (ngModelChange)="updatePlatformSetting('siteDescription', $event)">
+              </textarea>
+            </mat-form-field>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Support Email</mat-label>
+                <input 
+                  matInput 
+                  type="email"
+                  [ngModel]="platformSettings().supportEmail"
+                  (ngModelChange)="updatePlatformSetting('supportEmail', $event)" />
+                <mat-icon matPrefix>email</mat-icon>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Support Phone</mat-label>
+                <input 
+                  matInput 
+                  [ngModel]="platformSettings().supportPhone"
+                  (ngModelChange)="updatePlatformSetting('supportPhone', $event)" />
+                <mat-icon matPrefix>phone</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="settings-card">
+          <div class="card-header">
+            <mat-icon>language</mat-icon>
+            <h2>Localization</h2>
+          </div>
+          <div class="form-content">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Default Language</mat-label>
+                <mat-select 
+                  [value]="platformSettings().defaultLanguage"
+                  (selectionChange)="updatePlatformSetting('defaultLanguage', $event.value)">
+                  @for (lang of languages; track lang.code) {
+                    <mat-option [value]="lang.code">{{ lang.name }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Default Currency</mat-label>
+                <mat-select 
+                  [value]="platformSettings().defaultCurrency"
+                  (selectionChange)="updatePlatformSetting('defaultCurrency', $event.value)">
+                  @for (curr of currencies; track curr.code) {
+                    <mat-option [value]="curr.code">{{ curr.name }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="settings-card">
+          <div class="card-header">
+            <mat-icon>toggle_on</mat-icon>
+            <h2>Platform Controls</h2>
+          </div>
+          <div class="form-content toggles-list">
+            <div class="toggle-item warning">
+              <div class="toggle-info">
+                <mat-icon>engineering</mat-icon>
+                <div>
+                  <h3>Maintenance Mode</h3>
+                  <p>Enable to show maintenance page to all users</p>
+                </div>
+              </div>
+              <mat-slide-toggle
+                [checked]="platformSettings().maintenanceMode"
+                (change)="updatePlatformSetting('maintenanceMode', $event.checked)"
+                color="warn">
+              </mat-slide-toggle>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <mat-icon>person_add</mat-icon>
+                <div>
+                  <h3>Allow Registration</h3>
+                  <p>Allow new users to register on the platform</p>
+                </div>
+              </div>
+              <mat-slide-toggle
+                [checked]="platformSettings().allowRegistration"
+                (change)="updatePlatformSetting('allowRegistration', $event.checked)"
+                color="primary">
+              </mat-slide-toggle>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <mat-icon>mark_email_read</mat-icon>
+                <div>
+                  <h3>Require Email Verification</h3>
+                  <p>Users must verify their email before accessing the platform</p>
+                </div>
+              </div>
+              <mat-slide-toggle
+                [checked]="platformSettings().requireEmailVerification"
+                (change)="updatePlatformSetting('requireEmailVerification', $event.checked)"
+                color="primary">
+              </mat-slide-toggle>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <mat-icon>phone_android</mat-icon>
+                <div>
+                  <h3>Require Phone Verification</h3>
+                  <p>Users must verify their phone number</p>
+                </div>
+              </div>
+              <mat-slide-toggle
+                [checked]="platformSettings().requirePhoneVerification"
+                (change)="updatePlatformSetting('requirePhoneVerification', $event.checked)"
+                color="primary">
+              </mat-slide-toggle>
+            </div>
+          </div>
+        </mat-card>
+      }
+
+      <!-- Commission & Payments -->
+      @if (selectedTab() === 1) {
+        <mat-card class="settings-card">
+          <div class="card-header">
+            <mat-icon>percent</mat-icon>
+            <h2>Commission Rates</h2>
+          </div>
+          <div class="form-content">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Farmer Commission (%)</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  step="0.1"
+                  [ngModel]="commissionSettings().farmerCommission"
+                  (ngModelChange)="updateCommissionSetting('farmerCommission', $event)" />
+                <span matTextSuffix>%</span>
+                <mat-hint>Deducted from farmer earnings</mat-hint>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Buyer Commission (%)</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  step="0.1"
+                  [ngModel]="commissionSettings().buyerCommission"
+                  (ngModelChange)="updateCommissionSetting('buyerCommission', $event)" />
+                <span matTextSuffix>%</span>
+                <mat-hint>Added to buyer's order total</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="settings-card">
+          <div class="card-header">
+            <mat-icon>shopping_cart</mat-icon>
+            <h2>Order Limits</h2>
+          </div>
+          <div class="form-content">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Minimum Order Value</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  [ngModel]="commissionSettings().minOrderValue"
+                  (ngModelChange)="updateCommissionSetting('minOrderValue', $event)" />
+                <span matTextPrefix>₹&nbsp;</span>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Maximum Order Value</mat-label>
+                <input 
+                  matInput 
+                  type="number"
+                  [ngModel]="commissionSettings().maxOrderValue"
+                  (ngModelChange)="updateCommissionSetting('maxOrderValue', $event)" />
+                <span matTextPrefix>₹&nbsp;</span>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="settings-card">
+          <div class="card-header">
+            <mat-icon>account_balance_wallet</mat-icon>
+            <h2>Payment Methods</h2>
+          </div>
+          <div class="form-content">
+            <p class="help-text">Select enabled payment methods for the platform</p>
+            <div class="payment-methods-grid">
+              @for (payment of paymentOptions; track payment.value) {
+                <button 
+                  class="payment-option"
+                  [class.active]="commissionSettings().paymentMethods.includes(payment.value)"
+                  (click)="togglePaymentMethod(payment.value)">
+                  <mat-icon>{{ payment.icon }}</mat-icon>
+                  <span>{{ payment.label }}</span>
+                  @if (commissionSettings().paymentMethods.includes(payment.value)) {
+                    <mat-icon class="check-icon">check_circle</mat-icon>
+                  }
+                </button>
+              }
+            </div>
+          </div>
+        </mat-card>
+      }
+
+      <!-- Notifications -->
+      @if (selectedTab() === 2) {
+        <mat-card class="settings-card">
+          <div class="card-header">
+            <mat-icon>campaign</mat-icon>
+            <h2>Notification Channels</h2>
+          </div>
+          <div class="form-content toggles-list">
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <mat-icon>email</mat-icon>
+                <div>
+                  <h3>Email Notifications</h3>
+                  <p>Send system notifications via email</p>
+                </div>
+              </div>
+              <mat-slide-toggle
+                [checked]="notificationSettings().emailNotifications"
+                (change)="updateNotificationSetting('emailNotifications', $event.checked)"
+                color="primary">
+              </mat-slide-toggle>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <mat-icon>sms</mat-icon>
+                <div>
+                  <h3>SMS Notifications</h3>
+                  <p>Send critical notifications via SMS</p>
+                </div>
+              </div>
+              <mat-slide-toggle
+                [checked]="notificationSettings().smsNotifications"
+                (change)="updateNotificationSetting('smsNotifications', $event.checked)"
+                color="primary">
+              </mat-slide-toggle>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <mat-icon>notifications_active</mat-icon>
+                <div>
+                  <h3>Push Notifications</h3>
+                  <p>Send browser push notifications</p>
+                </div>
+              </div>
+              <mat-slide-toggle
+                [checked]="notificationSettings().pushNotifications"
+                (change)="updateNotificationSetting('pushNotifications', $event.checked)"
+                color="primary">
+              </mat-slide-toggle>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="settings-card">
+          <div class="card-header">
+            <mat-icon>admin_panel_settings</mat-icon>
+            <h2>Admin Notifications</h2>
+          </div>
+          <div class="form-content toggles-list">
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <mat-icon>warning</mat-icon>
+                <div>
+                  <h3>Admin Alerts</h3>
+                  <p>Receive critical system alerts</p>
+                </div>
+              </div>
+              <mat-slide-toggle
+                [checked]="notificationSettings().adminAlerts"
+                (change)="updateNotificationSetting('adminAlerts', $event.checked)"
+                color="primary">
+              </mat-slide-toggle>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <mat-icon>today</mat-icon>
+                <div>
+                  <h3>Daily Reports</h3>
+                  <p>Receive daily activity reports</p>
+                </div>
+              </div>
+              <mat-slide-toggle
+                [checked]="notificationSettings().dailyReports"
+                (change)="updateNotificationSetting('dailyReports', $event.checked)"
+                color="primary">
+              </mat-slide-toggle>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <div class="toggle-item">
+              <div class="toggle-info">
+                <mat-icon>date_range</mat-icon>
+                <div>
+                  <h3>Weekly Reports</h3>
+                  <p>Receive weekly summary reports</p>
+                </div>
+              </div>
+              <mat-slide-toggle
+                [checked]="notificationSettings().weeklyReports"
+                (change)="updateNotificationSetting('weeklyReports', $event.checked)"
+                color="primary">
+              </mat-slide-toggle>
+            </div>
+          </div>
+        </mat-card>
+      }
+
+      <!-- Security -->
+      @if (selectedTab() === 3) {
+        <mat-card class="settings-card">
+          <div class="card-header">
+            <mat-icon>security</mat-icon>
+            <h2>Security Settings</h2>
+          </div>
+          <div class="form-content">
+            <div class="security-info">
+              <mat-icon>info</mat-icon>
+              <p>Security settings are managed through the server configuration. Contact your system administrator for changes.</p>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card class="settings-card">
+          <div class="card-header">
+            <mat-icon>history</mat-icon>
+            <h2>Audit Log</h2>
+          </div>
+          <div class="form-content">
+            <div class="audit-actions">
+              <button mat-stroked-button>
+                <mat-icon>download</mat-icon>
+                Export Audit Log
+              </button>
+              <button mat-stroked-button>
+                <mat-icon>visibility</mat-icon>
+                View Full Log
+              </button>
+            </div>
+          </div>
+        </mat-card>
+      }
+    </div>
+  </div>
+</div>
+

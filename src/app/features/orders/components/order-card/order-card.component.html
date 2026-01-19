@@ -1,0 +1,168 @@
+<!-- Order Card -->
+<mat-card 
+  class="order-card" 
+  [class.compact]="compact()"
+  [class.active]="isActive()"
+  [class.delivered]="order().orderStatus === OrderStatus.DELIVERED"
+  [class.cancelled]="order().orderStatus === OrderStatus.CANCELLED"
+  (click)="onViewDetails()"
+>
+  <!-- Status Ribbon -->
+  <div class="status-ribbon" [class]="statusConfig().color">
+    <mat-icon>{{ statusConfig().icon }}</mat-icon>
+    <span>{{ statusConfig().label }}</span>
+  </div>
+
+  <div class="card-content">
+    <!-- Header -->
+    <div class="card-header">
+      <div class="order-info">
+        <span class="order-number">{{ order().orderNumber }}</span>
+        <span class="order-date">{{ order().createdAt | date:'mediumDate' }}</span>
+      </div>
+
+      <!-- Actions Menu -->
+      <button 
+        mat-icon-button 
+        [matMenuTriggerFor]="actionsMenu"
+        (click)="$event.stopPropagation()"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #actionsMenu="matMenu">
+        <button mat-menu-item (click)="onViewDetails()">
+          <mat-icon>visibility</mat-icon>
+          View Details
+        </button>
+        @if (hasTracking()) {
+          <button mat-menu-item (click)="onTrackOrder()">
+            <mat-icon>local_shipping</mat-icon>
+            Track Order
+          </button>
+        }
+        <button mat-menu-item (click)="onContactParty()">
+          <mat-icon>chat</mat-icon>
+          Contact {{ partyLabel() }}
+        </button>
+        @if (canCancel()) {
+          <mat-divider></mat-divider>
+          <button mat-menu-item class="cancel-item" (click)="onCancelOrder()">
+            <mat-icon>cancel</mat-icon>
+            Cancel Order
+          </button>
+        }
+      </mat-menu>
+    </div>
+
+    <!-- Items Preview -->
+    <div class="items-section">
+      <div class="item-image">
+        @if (firstItemImage(); as img) {
+          <img [src]="img" [alt]="order().items[0].cropName" />
+        } @else {
+          <mat-icon>inventory_2</mat-icon>
+        }
+        @if (order().items.length > 1) {
+          <span class="item-count">+{{ order().items.length - 1 }}</span>
+        }
+      </div>
+
+      <div class="item-details">
+        <h3 class="item-name">{{ itemsSummary() }}</h3>
+        <p class="item-quantity">{{ totalQuantity() }} {{ order().items[0].unit }}</p>
+      </div>
+
+      <div class="item-price">
+        <span class="total-amount">₹{{ order().totalAmount | number:'1.0-0' }}</span>
+        <span class="payment-status" [class]="paymentConfig().color">
+          <mat-icon>{{ paymentConfig().icon }}</mat-icon>
+          {{ paymentConfig().label }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Party Info -->
+    <div class="party-section">
+      <div class="party-avatar">
+        @if (otherParty().avatar) {
+          <img [src]="otherParty().avatar" [alt]="otherParty().name" />
+        } @else {
+          <span class="initials">{{ partyInitials() }}</span>
+        }
+      </div>
+      <div class="party-info">
+        <span class="party-label">{{ partyLabel() }}</span>
+        <span class="party-name">{{ otherParty().name }}</span>
+        <span class="party-location">
+          <mat-icon>location_on</mat-icon>
+          {{ otherParty().location }}
+        </span>
+      </div>
+      <div class="party-rating">
+        <mat-icon>star</mat-icon>
+        <span>{{ otherParty().rating }}</span>
+      </div>
+    </div>
+
+    <!-- Delivery Info -->
+    @if (isActive() && !compact()) {
+      <div class="delivery-section">
+        <mat-icon>local_shipping</mat-icon>
+        <div class="delivery-info">
+          @if (order().orderStatus === OrderStatus.OUT_FOR_DELIVERY) {
+            <span class="delivery-text urgent">Arriving today!</span>
+          } @else if (daysUntilDelivery() <= 0) {
+            <span class="delivery-text">Expected today</span>
+          } @else if (daysUntilDelivery() === 1) {
+            <span class="delivery-text">Delivery tomorrow</span>
+          } @else {
+            <span class="delivery-text">
+              Expected {{ order().deliveryInfo.estimatedDelivery | date:'mediumDate' }}
+            </span>
+          }
+          @if (hasTracking()) {
+            <span class="tracking-id">
+              Tracking: {{ order().deliveryInfo.trackingId }}
+            </span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Farmer Actions -->
+    @if (isFarmerView() && canUpdateStatus() && !compact()) {
+      <div class="farmer-actions">
+        @for (option of nextStatusOptions(); track option.status) {
+          @if (option.status !== OrderStatus.CANCELLED) {
+            <button 
+              mat-flat-button 
+              [color]="option.status === OrderStatus.DELIVERED ? 'primary' : 'accent'"
+              (click)="onUpdateStatus(option.status); $event.stopPropagation()"
+            >
+              <mat-icon>{{ option.icon }}</mat-icon>
+              {{ option.label }}
+            </button>
+          }
+        }
+      </div>
+    }
+
+    <!-- Footer -->
+    @if (!compact()) {
+      <div class="card-footer">
+        <button mat-stroked-button (click)="onViewDetails(); $event.stopPropagation()">
+          View Details
+        </button>
+        @if (hasTracking()) {
+          <button mat-stroked-button (click)="onTrackOrder(); $event.stopPropagation()">
+            <mat-icon>pin_drop</mat-icon>
+            Track
+          </button>
+        }
+      </div>
+    }
+  </div>
+</mat-card>
+
+
+

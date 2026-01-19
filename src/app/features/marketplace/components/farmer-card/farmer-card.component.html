@@ -1,0 +1,86 @@
+<mat-card class="farmer-card">
+  <div class="farmer-header">
+    <div class="farmer-avatar" (click)="onViewProfile()">
+      @if (farmer().avatar) {
+        <img [src]="farmer().avatar" [alt]="farmer().name" />
+      } @else {
+        <span class="initials">{{ initials() }}</span>
+      }
+      @if (farmer().isVerified) {
+        <mat-icon class="verified-badge" matTooltip="Verified Farmer">verified</mat-icon>
+      }
+    </div>
+    <div class="farmer-info">
+      <h3 class="farmer-name" (click)="onViewProfile()">{{ farmer().name }}</h3>
+      <div class="farmer-location">
+        <mat-icon>location_on</mat-icon>
+        {{ farmer().location }}, {{ farmer().state }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Rating -->
+  <div class="rating-section">
+    <div class="rating-stars">
+      @for (s of [].constructor(ratingStars().full); track $index) {
+        <mat-icon class="star filled">star</mat-icon>
+      }
+      @if (ratingStars().half) {
+        <mat-icon class="star half">star_half</mat-icon>
+      }
+      @for (s of [].constructor(ratingStars().empty); track $index) {
+        <mat-icon class="star empty">star_outline</mat-icon>
+      }
+      <span class="rating-value">{{ farmer().rating }}</span>
+    </div>
+    <span class="order-count">{{ farmer().totalOrders }} orders</span>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Stats -->
+  <div class="stats-section">
+    <div class="stat">
+      <mat-icon>check_circle</mat-icon>
+      <div>
+        <span class="value">{{ farmer().successRate }}%</span>
+        <span class="label">Success Rate</span>
+      </div>
+    </div>
+    <div class="stat">
+      <mat-icon>schedule</mat-icon>
+      <div>
+        <span class="value">{{ farmer().responseTime }}</span>
+        <span class="label">Response</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Languages -->
+  <div class="languages-section">
+    <span class="label">Languages:</span>
+    <span class="languages">{{ farmer().languages.join(', ') }}</span>
+  </div>
+
+  <!-- Member Since -->
+  <div class="member-since">
+    <mat-icon>calendar_today</mat-icon>
+    Member since {{ farmer().memberSince | date:'MMM yyyy' }}
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button mat-stroked-button (click)="onViewProfile()">
+      <mat-icon>person</mat-icon>
+      View Profile
+    </button>
+    <button mat-flat-button color="primary" (click)="onContact()">
+      <mat-icon>chat</mat-icon>
+      Contact
+    </button>
+  </div>
+</mat-card>
+
+

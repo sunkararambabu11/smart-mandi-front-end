@@ -1,0 +1,121 @@
+<div class="addresses-page">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1>My Addresses</h1>
+      <p>Manage your delivery and billing addresses</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="onAddAddress()">
+      <mat-icon>add</mat-icon>
+      Add New Address
+    </button>
+  </header>
+
+  <!-- Addresses Grid -->
+  @if (addresses().length > 0) {
+    <div class="addresses-grid">
+      @for (address of addresses(); track trackByAddressId($index, address)) {
+        <mat-card class="address-card" [class.default]="address.isDefault">
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="address-type">
+              <mat-icon>{{ addressTypeIcons[address.type] }}</mat-icon>
+              <span class="label">{{ address.label }}</span>
+              @if (address.isDefault) {
+                <mat-chip class="default-badge">Default</mat-chip>
+              }
+            </div>
+            
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Address options">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="onEditAddress(address)">
+                <mat-icon>edit</mat-icon>
+                <span>Edit</span>
+              </button>
+              @if (!address.isDefault) {
+                <button mat-menu-item (click)="onSetDefault(address)">
+                  <mat-icon>check_circle</mat-icon>
+                  <span>Set as Default</span>
+                </button>
+              }
+              <button mat-menu-item (click)="onDeleteAddress(address)" class="delete-action">
+                <mat-icon>delete</mat-icon>
+                <span>Delete</span>
+              </button>
+            </mat-menu>
+          </div>
+
+          <!-- Address Details -->
+          <div class="address-details">
+            <p class="name">{{ address.fullName }}</p>
+            <p class="address-line">{{ address.addressLine1 }}</p>
+            @if (address.addressLine2) {
+              <p class="address-line">{{ address.addressLine2 }}</p>
+            }
+            <p class="address-line">
+              {{ address.city }}, {{ address.state }} - {{ address.pincode }}
+            </p>
+            @if (address.landmark) {
+              <p class="landmark">
+                <mat-icon>place</mat-icon>
+                {{ address.landmark }}
+              </p>
+            }
+            <p class="phone">
+              <mat-icon>phone</mat-icon>
+              {{ address.phone }}
+            </p>
+          </div>
+
+          <!-- Card Actions -->
+          <div class="card-actions">
+            <button mat-stroked-button (click)="onEditAddress(address)">
+              <mat-icon>edit</mat-icon>
+              Edit
+            </button>
+            @if (!address.isDefault) {
+              <button mat-button (click)="onSetDefault(address)">
+                Set as Default
+              </button>
+            }
+          </div>
+        </mat-card>
+      }
+
+      <!-- Add New Address Card -->
+      <mat-card class="add-card" (click)="onAddAddress()" role="button" tabindex="0"
+                (keydown.enter)="onAddAddress()" (keydown.space)="onAddAddress(); $event.preventDefault()">
+        <mat-icon>add_circle_outline</mat-icon>
+        <span>Add New Address</span>
+      </mat-card>
+    </div>
+  } @else {
+    <!-- Empty State -->
+    <mat-card class="empty-state">
+      <div class="empty-content">
+        <div class="empty-icon">
+          <mat-icon>location_off</mat-icon>
+        </div>
+        <h2>No Addresses Yet</h2>
+        <p>Add your first delivery address to get started</p>
+        <button mat-raised-button color="primary" (click)="onAddAddress()">
+          <mat-icon>add</mat-icon>
+          Add Your First Address
+        </button>
+      </div>
+    </mat-card>
+  }
+
+  <!-- Info Card -->
+  <mat-card class="info-card">
+    <mat-icon>info</mat-icon>
+    <div>
+      <strong>Why add multiple addresses?</strong>
+      <p>Save time during checkout by adding addresses for home, work, or your farm location.</p>
+    </div>
+  </mat-card>
+</div>
+

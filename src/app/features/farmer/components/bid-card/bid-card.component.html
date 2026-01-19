@@ -1,0 +1,166 @@
+<!-- Bid Card -->
+<mat-card 
+  class="bid-card" 
+  [class.highlighted]="isHighlighted()"
+  [ngClass]="statusClass()"
+>
+  <!-- New Bid Indicator -->
+  @if (isHighlighted() && bid().status === BidStatus.PENDING) {
+    <div class="highest-badge">
+      <mat-icon>emoji_events</mat-icon>
+      <span>Highest Bid</span>
+    </div>
+  }
+
+  <div class="card-content">
+    <!-- Buyer Info -->
+    <div class="buyer-section" (click)="onViewProfile()">
+      <div class="buyer-avatar">
+        @if (bid().buyerAvatar) {
+          <img [src]="bid().buyerAvatar" [alt]="bid().buyerName" />
+        } @else {
+          <span class="initials">{{ buyerInitials() }}</span>
+        }
+      </div>
+
+      <div class="buyer-info">
+        <h3 class="buyer-name">{{ bid().buyerName }}</h3>
+        
+        <div class="buyer-meta">
+          <!-- Rating -->
+          <div class="rating">
+            @for (s of [].constructor(ratingStars().full); track $index) {
+              <mat-icon class="star filled">star</mat-icon>
+            }
+            @if (ratingStars().half) {
+              <mat-icon class="star half">star_half</mat-icon>
+            }
+            @for (s of [].constructor(ratingStars().empty); track $index) {
+              <mat-icon class="star empty">star_outline</mat-icon>
+            }
+            <span class="rating-value">{{ bid().buyerRating | number:'1.1-1' }}</span>
+          </div>
+
+          <span class="divider">•</span>
+          <span class="orders">{{ bid().buyerOrderCount }} orders</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bid Details -->
+    <div class="bid-details">
+      <div class="price-section">
+        <div class="bid-amount">
+          <span class="currency">₹</span>
+          <span class="amount">{{ bid().amount }}</span>
+          <span class="unit">/{{ bid().unit }}</span>
+        </div>
+        <div class="quantity">
+          {{ bid().quantity }} {{ bid().unit }}
+        </div>
+        <div class="total-value">
+          Total: ₹{{ bid().totalValue | number:'1.0-0' }}
+        </div>
+      </div>
+
+      <!-- Status Badge -->
+      <div class="status-section">
+        @switch (bid().status) {
+          @case (BidStatus.PENDING) {
+            <span class="status-badge pending">
+              <mat-icon>schedule</mat-icon>
+              Pending
+            </span>
+          }
+          @case (BidStatus.ACCEPTED) {
+            <span class="status-badge accepted">
+              <mat-icon>check_circle</mat-icon>
+              Accepted
+            </span>
+          }
+          @case (BidStatus.REJECTED) {
+            <span class="status-badge rejected">
+              <mat-icon>cancel</mat-icon>
+              Rejected
+            </span>
+          }
+          @case (BidStatus.EXPIRED) {
+            <span class="status-badge expired">
+              <mat-icon>timer_off</mat-icon>
+              Expired
+            </span>
+          }
+          @case (BidStatus.COUNTERED) {
+            <span class="status-badge countered">
+              <mat-icon>swap_horiz</mat-icon>
+              Countered
+            </span>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- Message -->
+    @if (bid().message) {
+      <div class="message-section">
+        <mat-icon>message</mat-icon>
+        <p>{{ bid().message }}</p>
+      </div>
+    }
+
+    <!-- Footer -->
+    <div class="card-footer">
+      <div class="time-info">
+        <span class="created">{{ bid().createdAt | date:'short' }}</span>
+        @if (bid().status === BidStatus.PENDING) {
+          <span class="expires" [class.urgent]="isExpiringSoon()">
+            <mat-icon>timer</mat-icon>
+            {{ timeRemaining() }}
+          </span>
+        }
+        @if (bid().respondedAt) {
+          <span class="responded">
+            Responded {{ bid().respondedAt | date:'short' }}
+          </span>
+        }
+      </div>
+
+      <!-- Actions -->
+      @if (isActionable()) {
+        <div class="actions">
+          <button 
+            mat-stroked-button 
+            color="warn"
+            (click)="onReject()"
+            matTooltip="Reject Bid"
+          >
+            <mat-icon>close</mat-icon>
+            Reject
+          </button>
+
+          <button 
+            mat-stroked-button
+            (click)="onCounter()"
+            matTooltip="Make Counter Offer"
+          >
+            <mat-icon>swap_horiz</mat-icon>
+            Counter
+          </button>
+
+          <button 
+            mat-flat-button 
+            color="primary"
+            (click)="onAccept()"
+            matTooltip="Accept Bid"
+          >
+            <mat-icon>check</mat-icon>
+            Accept
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</mat-card>
+
+
+

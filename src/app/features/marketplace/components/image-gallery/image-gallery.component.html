@@ -1,0 +1,99 @@
+<div class="image-gallery">
+  <!-- Main Image -->
+  <div class="main-image-container">
+    @if (currentImage(); as image) {
+      <img
+        [src]="image.url"
+        [alt]="'Image ' + (selectedIndex() + 1)"
+        class="main-image"
+        (click)="openLightbox()" />
+    } @else {
+      <div class="no-image">
+        <mat-icon>image_not_supported</mat-icon>
+        <span>No image available</span>
+      </div>
+    }
+
+    <!-- Navigation Arrows -->
+    @if (images().length > 1) {
+      <button
+        mat-icon-button
+        class="nav-btn prev"
+        (click)="prevImage()"
+        [disabled]="selectedIndex() === 0">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        class="nav-btn next"
+        (click)="nextImage()"
+        [disabled]="selectedIndex() === images().length - 1">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    }
+
+    <!-- Image Counter -->
+    @if (images().length > 1) {
+      <div class="image-counter">
+        {{ selectedIndex() + 1 }} / {{ images().length }}
+      </div>
+    }
+
+    <!-- Zoom Button -->
+    <button mat-icon-button class="zoom-btn" (click)="openLightbox()">
+      <mat-icon>zoom_in</mat-icon>
+    </button>
+  </div>
+
+  <!-- Thumbnails -->
+  @if (images().length > 1) {
+    <div class="thumbnails">
+      @for (image of images(); track image.id; let i = $index) {
+        <button
+          class="thumbnail"
+          [class.active]="i === selectedIndex()"
+          (click)="selectImage(i)">
+          <img [src]="image.thumbnailUrl" [alt]="'Thumbnail ' + (i + 1)" />
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Lightbox -->
+  @if (showLightbox()) {
+    <div class="lightbox" (click)="closeLightbox()">
+      <button mat-icon-button class="close-btn" (click)="closeLightbox()">
+        <mat-icon>close</mat-icon>
+      </button>
+
+      <img
+        [src]="currentImage()?.url"
+        [alt]="'Full size image'"
+        class="lightbox-image"
+        (click)="$event.stopPropagation()" />
+
+      @if (images().length > 1) {
+        <button
+          mat-icon-button
+          class="lightbox-nav prev"
+          (click)="prevImage(); $event.stopPropagation()"
+          [disabled]="selectedIndex() === 0">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          class="lightbox-nav next"
+          (click)="nextImage(); $event.stopPropagation()"
+          [disabled]="selectedIndex() === images().length - 1">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      }
+
+      <div class="lightbox-counter">
+        {{ selectedIndex() + 1 }} / {{ images().length }}
+      </div>
+    </div>
+  }
+</div>
+
+

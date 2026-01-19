@@ -1,0 +1,26 @@
+<mat-card class="stats-card" [class]="colorClass()">
+  <div class="stats-icon">
+    <mat-icon>{{ icon() }}</mat-icon>
+  </div>
+  <div class="stats-content">
+    <span class="stats-label">{{ label() }}</span>
+    <span class="stats-value">
+      @if (isCurrency()) {
+        {{ value() | currency:'INR':'symbol':'1.0-0' }}
+      } @else {
+        {{ value() | number:'1.0-0' }}
+      }
+    </span>
+    @if (subValue()) {
+      <span class="stats-sub">{{ subValue() }}</span>
+    }
+  </div>
+  @if (trend() !== null && trend() !== undefined) {
+    <div class="stats-trend" [class.positive]="trend()! >= 0" [class.negative]="trend()! < 0">
+      <mat-icon>{{ trend()! >= 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+      <span>{{ trend()! >= 0 ? '+' : '' }}{{ trend() }}%</span>
+    </div>
+  }
+</mat-card>
+
+

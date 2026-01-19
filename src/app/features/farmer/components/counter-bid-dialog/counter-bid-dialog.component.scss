@@ -1,0 +1,164 @@
+.counter-dialog {
+  min-width: 340px;
+}
+
+.dialog-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1.5rem 1rem;
+  text-align: center;
+
+  .icon-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+
+    &.counter {
+      background: #e3f2fd;
+      
+      mat-icon {
+        font-size: 40px;
+        width: 40px;
+        height: 40px;
+        color: #1976d2;
+      }
+    }
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .subtitle {
+    margin: 0.25rem 0 0;
+    color: #666;
+    font-size: 0.875rem;
+  }
+}
+
+mat-dialog-content {
+  padding: 0 1.5rem 1rem;
+}
+
+.price-comparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+
+  .price-item {
+    text-align: center;
+
+    .label {
+      display: block;
+      font-size: 0.75rem;
+      color: #666;
+      margin-bottom: 0.25rem;
+    }
+
+    .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+
+      &.bid {
+        color: #666;
+      }
+
+      &.counter {
+        color: #1976d2;
+      }
+    }
+  }
+
+  .arrow {
+    color: #999;
+  }
+}
+
+.slider-section {
+  margin-bottom: 1rem;
+
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 0.25rem;
+  }
+
+  mat-slider {
+    width: 100%;
+  }
+}
+
+.amount-input {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.difference-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #666;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &.positive {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+}
+
+.total-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  border-radius: 12px;
+
+  .label {
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1b5e20;
+  }
+}
+
+mat-dialog-actions {
+  padding: 1rem 1.5rem 1.5rem;
+  gap: 0.5rem;
+
+  button mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-right: 0.25rem;
+  }
+}

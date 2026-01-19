@@ -1,0 +1,109 @@
+<div class="reports-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Reports & Analytics</h1>
+      <p class="page-subtitle">Track marketplace performance and insights</p>
+    </div>
+    <div class="header-actions">
+      <mat-form-field appearance="outline" class="period-select">
+        <mat-select
+          [value]="selectedPeriod()"
+          (selectionChange)="onPeriodChange($event.value)"
+        >
+          @for (period of periods; track period.value) {
+            <mat-option [value]="period.value">{{ period.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <button mat-stroked-button (click)="exportReport('pdf')">
+        <mat-icon>picture_as_pdf</mat-icon>
+        Export PDF
+      </button>
+      <button mat-stroked-button (click)="exportReport('excel')">
+        <mat-icon>table_chart</mat-icon>
+        Export Excel
+      </button>
+    </div>
+  </header>
+
+  <!-- Metrics Grid -->
+  <div class="metrics-grid">
+    @for (metric of metrics; track metric.title) {
+      <mat-card class="metric-card">
+        <mat-card-content>
+          <div class="metric-header">
+            <div class="metric-icon">
+              <mat-icon>{{ metric.icon }}</mat-icon>
+            </div>
+            <span
+              class="metric-change"
+              [class.positive]="metric.trend === 'up'"
+              [class.negative]="metric.trend === 'down'"
+            >
+              <mat-icon>{{
+                metric.trend === 'up' ? 'trending_up' : 'trending_down'
+              }}</mat-icon>
+              {{ metric.change }}
+            </span>
+          </div>
+          <div class="metric-value">{{ metric.value }}</div>
+          <div class="metric-title">{{ metric.title }}</div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-grid">
+    <!-- Revenue Chart -->
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>Revenue Overview</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="chart-placeholder">
+          <mat-icon>show_chart</mat-icon>
+          <p>Revenue chart will be displayed here</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Orders Chart -->
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>Orders Trend</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="chart-placeholder">
+          <mat-icon>bar_chart</mat-icon>
+          <p>Orders chart will be displayed here</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Top Products Section -->
+  <mat-card class="top-products-card">
+    <mat-card-header>
+      <mat-card-title>Top Selling Products</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="products-list">
+        @for (product of topProducts; track product.name; let i = $index) {
+          <div class="product-item">
+            <span class="product-rank">{{ i + 1 }}</span>
+            <div class="product-info">
+              <span class="product-name">{{ product.name }}</span>
+              <span class="product-sales">{{ product.sales }} sales</span>
+            </div>
+            <span class="product-revenue">{{ product.revenue }}</span>
+          </div>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+

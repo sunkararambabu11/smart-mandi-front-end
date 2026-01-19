@@ -1,0 +1,273 @@
+<!-- Marketplace Page -->
+<mat-drawer-container class="marketplace-container" hasBackdrop="true">
+  <!-- Filter Drawer (Mobile) -->
+  <mat-drawer #filterDrawer mode="over" position="start" class="filter-drawer">
+    <smc-marketplace-filters
+      [filters]="filters()"
+      [categories]="categories()"
+      [locations]="locations()"
+      [activeFilterCount]="activeFilterCount()"
+      (filterChange)="onFilterChange($event)"
+      (applyFilters)="onApplyFilters()"
+      (resetFilters)="onResetFilters()"
+      (close)="closeFilters()"
+    />
+  </mat-drawer>
+
+  <!-- Main Content -->
+  <mat-drawer-content class="marketplace-content">
+    <!-- Search Header -->
+    <header class="search-header" [class.scrolled]="isScrolled()">
+      <div class="header-content">
+        <!-- Logo / Title -->
+        <div class="header-title">
+          <h1>Marketplace</h1>
+          <span class="crop-count">{{ pagination().total }} crops</span>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input
+            type="text"
+            placeholder="Search crops, farmers, locations..."
+            [value]="searchTerm()"
+            (input)="onSearchChange($event)"
+          />
+          @if (searchTerm()) {
+            <button mat-icon-button class="clear-btn" (click)="clearSearch()">
+              <mat-icon>close</mat-icon>
+            </button>
+          }
+        </div>
+
+        <!-- Actions -->
+        <div class="header-actions">
+          <!-- Filter Toggle (Mobile) -->
+          <button
+            mat-icon-button
+            class="filter-toggle"
+            [matBadge]="activeFilterCount() || null"
+            matBadgeColor="accent"
+            matBadgeSize="small"
+            (click)="toggleFilters()"
+          >
+            <mat-icon>tune</mat-icon>
+          </button>
+
+          <!-- View Toggle -->
+          <div class="view-toggle">
+            <button
+              mat-icon-button
+              [class.active]="viewMode() === 'grid'"
+              (click)="setViewMode('grid')"
+              matTooltip="Grid View"
+            >
+              <mat-icon>grid_view</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              [class.active]="viewMode() === 'list'"
+              (click)="setViewMode('list')"
+              matTooltip="List View"
+            >
+              <mat-icon>view_list</mat-icon>
+            </button>
+          </div>
+
+          <!-- Sort Menu -->
+          <button mat-stroked-button [matMenuTriggerFor]="sortMenu" class="sort-btn">
+            <mat-icon>sort</mat-icon>
+            <span>{{ currentSortLabel() }}</span>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+          <mat-menu #sortMenu="matMenu">
+            <button mat-menu-item (click)="onSortChange('newest')">
+              <mat-icon>schedule</mat-icon>
+              Newest First
+            </button>
+            <button mat-menu-item (click)="onSortChange('price_low')">
+              <mat-icon>arrow_upward</mat-icon>
+              Price: Low to High
+            </button>
+            <button mat-menu-item (click)="onSortChange('price_high')">
+              <mat-icon>arrow_downward</mat-icon>
+              Price: High to Low
+            </button>
+            <button mat-menu-item (click)="onSortChange('popular')">
+              <mat-icon>trending_up</mat-icon>
+              Most Popular
+            </button>
+            <button mat-menu-item (click)="onSortChange('rating')">
+              <mat-icon>star</mat-icon>
+              Highest Rated
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+
+      <!-- Category Chips -->
+      <div class="category-chips">
+        <button
+          class="category-chip"
+          [class.active]="!filters().category"
+          (click)="onCategoryClick('')"
+        >
+          All
+        </button>
+        @for (cat of categories(); track trackByCategoryId($index, cat)) {
+          <button
+            class="category-chip"
+            [class.active]="filters().category === cat.name"
+            (click)="onCategoryClick(cat.name)"
+          >
+            <mat-icon>{{ cat.icon }}</mat-icon>
+            {{ cat.name }}
+          </button>
+        }
+      </div>
+
+      <!-- Active Filters -->
+      @if (hasActiveFilters()) {
+        <div class="active-filters">
+          <span class="label">Active filters:</span>
+          @if (filters().category) {
+            <mat-chip (removed)="onFilterChange({ category: '' })">
+              {{ filters().category }}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+          }
+          @if (filters().location) {
+            <mat-chip (removed)="onFilterChange({ location: '' })">
+              {{ filters().location }}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+          }
+          @if (filters().isOrganic === true) {
+            <mat-chip (removed)="onFilterChange({ isOrganic: null })">
+              Organic
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+          }
+          @if (filters().qualityGrades.length > 0) {
+            <mat-chip (removed)="onFilterChange({ qualityGrades: [] })">
+              {{ filters().qualityGrades.length }} Quality Grades
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+          }
+          <button mat-button color="warn" (click)="onResetFilters()">
+            Clear All
+          </button>
+        </div>
+      }
+    </header>
+
+    <!-- Loading Bar -->
+    @if (isLoading()) {
+      <mat-progress-bar mode="indeterminate" class="loading-bar"></mat-progress-bar>
+    }
+
+    <!-- Main Area -->
+    <div class="main-area">
+      <!-- Desktop Sidebar -->
+      <aside class="desktop-filters">
+        <smc-marketplace-filters
+          [filters]="filters()"
+          [categories]="categories()"
+          [locations]="locations()"
+          [activeFilterCount]="activeFilterCount()"
+          (filterChange)="onFilterChange($event)"
+          (applyFilters)="onApplyFilters()"
+          (resetFilters)="onResetFilters()"
+          (close)="closeFilters()"
+        />
+      </aside>
+
+      <!-- Crops Area -->
+      <main class="crops-area">
+        @if (isLoading() && crops().length === 0) {
+          <!-- Loading Skeleton -->
+          <div class="loading-skeleton" [class.list-view]="viewMode() === 'list'">
+            @for (i of [1,2,3,4,5,6,7,8]; track i) {
+              <div class="skeleton-card">
+                <div class="skeleton-image"></div>
+                <div class="skeleton-content">
+                  <div class="skeleton-line short"></div>
+                  <div class="skeleton-line"></div>
+                  <div class="skeleton-line medium"></div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else if (crops().length === 0) {
+          <!-- Empty State -->
+          <div class="empty-state">
+            <mat-icon>search_off</mat-icon>
+            <h3>No crops found</h3>
+            <p>Try adjusting your filters or search terms</p>
+            <button mat-flat-button color="primary" (click)="onResetFilters()">
+              <mat-icon>restart_alt</mat-icon>
+              Reset Filters
+            </button>
+          </div>
+        } @else {
+          <!-- Crops Grid/List -->
+          <div 
+            #cropsGrid
+            class="crops-grid" 
+            [class.list-view]="viewMode() === 'list'"
+          >
+            @for (crop of crops(); track trackByCropId($index, crop)) {
+              <smc-marketplace-crop-card
+                [crop]="crop"
+                [viewMode]="viewMode()"
+                (viewDetails)="onViewDetails($event)"
+                (placeBid)="onPlaceBid($event)"
+                (addToWishlist)="onAddToWishlist($event)"
+                (viewFarmer)="onViewFarmer($event)"
+              />
+            }
+          </div>
+
+          <!-- Load More -->
+          @if (hasMore()) {
+            <div class="load-more">
+              @if (isLoadingMore()) {
+                <mat-spinner diameter="32"></mat-spinner>
+                <span>Loading more crops...</span>
+              } @else {
+                <button mat-stroked-button (click)="loadMore()">
+                  <mat-icon>expand_more</mat-icon>
+                  Load More
+                </button>
+              }
+            </div>
+          }
+
+          <!-- Results Info -->
+          <div class="results-info">
+            <span>
+              Showing {{ crops().length }} of {{ pagination().total }} crops
+            </span>
+          </div>
+        }
+      </main>
+    </div>
+
+    <!-- Scroll to Top -->
+    @if (isScrolled()) {
+      <button
+        mat-fab
+        color="primary"
+        class="scroll-top-btn"
+        (click)="scrollToTop()"
+        matTooltip="Scroll to top"
+      >
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      </button>
+    }
+  </mat-drawer-content>
+</mat-drawer-container>
+
+
+

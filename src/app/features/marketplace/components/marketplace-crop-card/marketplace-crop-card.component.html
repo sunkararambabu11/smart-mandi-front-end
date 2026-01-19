@@ -1,0 +1,139 @@
+<!-- Marketplace Crop Card -->
+<mat-card 
+  class="crop-card" 
+  [class.list-view]="viewMode() === 'list'"
+  [class.featured]="crop().isFeatured"
+  matRipple
+  (click)="onViewDetails()"
+>
+  <!-- Featured Badge -->
+  @if (crop().isFeatured) {
+    <div class="featured-badge">
+      <mat-icon>star</mat-icon>
+      Featured
+    </div>
+  }
+
+  <!-- Image Section -->
+  <div class="image-section">
+    <img 
+      [src]="imageUrl()" 
+      [alt]="crop().cropName"
+      loading="lazy"
+      (error)="$any($event.target).src = 'assets/images/crop-placeholder.jpg'"
+    />
+
+    <!-- Wishlist Button -->
+    <button 
+      mat-icon-button 
+      class="wishlist-btn"
+      (click)="onAddToWishlist($event)"
+      matTooltip="Add to Wishlist"
+    >
+      <mat-icon>favorite_border</mat-icon>
+    </button>
+
+    <!-- Organic Badge -->
+    @if (crop().isOrganic) {
+      <div class="organic-badge">
+        <mat-icon>eco</mat-icon>
+        Organic
+      </div>
+    }
+
+    <!-- Quality Badge -->
+    <div class="quality-badge" [ngClass]="qualityClass()">
+      {{ qualityLabel() }}
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-section">
+    <!-- Category & Location -->
+    <div class="meta-row">
+      <span class="category">{{ crop().category }}</span>
+      <span class="location">
+        <mat-icon>location_on</mat-icon>
+        {{ crop().farmerLocation }}
+      </span>
+    </div>
+
+    <!-- Crop Name -->
+    <h3 class="crop-name">{{ crop().cropName }}</h3>
+
+    <!-- Price & Quantity -->
+    <div class="price-row">
+      <div class="price">
+        <span class="amount">₹{{ crop().price }}</span>
+        <span class="unit">/{{ crop().unit }}</span>
+      </div>
+      <div class="quantity">
+        {{ crop().quantity }} {{ crop().unit }} available
+      </div>
+    </div>
+
+    <!-- Farmer Info -->
+    <div class="farmer-row" (click)="onViewFarmer($event)">
+      <div class="farmer-avatar">
+        <span>{{ farmerInitials() }}</span>
+      </div>
+      <div class="farmer-info">
+        <span class="farmer-name">{{ crop().farmerName }}</span>
+        <div class="farmer-rating">
+          @for (s of [].constructor(ratingStars().full); track $index) {
+            <mat-icon class="star filled">star</mat-icon>
+          }
+          @if (ratingStars().half) {
+            <mat-icon class="star half">star_half</mat-icon>
+          }
+          @for (s of [].constructor(ratingStars().empty); track $index) {
+            <mat-icon class="star empty">star_outline</mat-icon>
+          }
+          <span class="rating-value">{{ crop().farmerRating }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Harvest Info -->
+    <div class="harvest-row" [class]="harvestStatus()">
+      <mat-icon>event</mat-icon>
+      @switch (harvestStatus()) {
+        @case ('ready') {
+          <span>Ready for pickup</span>
+        }
+        @case ('soon') {
+          <span>Harvest in {{ daysUntilHarvest() }} days</span>
+        }
+        @default {
+          <span>Harvest: {{ crop().harvestDate | date:'mediumDate' }}</span>
+        }
+      }
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat">
+        <mat-icon>visibility</mat-icon>
+        <span>{{ crop().viewCount }}</span>
+      </div>
+      <div class="stat">
+        <mat-icon>gavel</mat-icon>
+        <span>{{ crop().bidCount }} bids</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-row">
+      <button mat-stroked-button (click)="onViewDetails(); $event.stopPropagation()">
+        View Details
+      </button>
+      <button mat-flat-button color="primary" (click)="onPlaceBid(); $event.stopPropagation()">
+        <mat-icon>gavel</mat-icon>
+        Place Bid
+      </button>
+    </div>
+  </div>
+</mat-card>
+
+
+

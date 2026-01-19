@@ -1,0 +1,56 @@
+<div 
+  class="loader-container"
+  [class]="containerClasses()"
+  [attr.aria-label]="ariaLabel()"
+  role="status">
+  @switch (variant()) {
+    @case ('spinner') {
+      <div class="loader-spinner">
+        <svg viewBox="0 0 50 50" [class]="sizeClass()">
+          <circle
+            class="track"
+            cx="25"
+            cy="25"
+            r="20"
+            fill="none"
+            stroke-width="4" />
+          <circle
+            class="path"
+            cx="25"
+            cy="25"
+            r="20"
+            fill="none"
+            stroke-width="4"
+            stroke-linecap="round" />
+        </svg>
+      </div>
+    }
+    @case ('dots') {
+      <div class="loader-dots" [class]="sizeClass()">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    }
+    @case ('pulse') {
+      <div class="loader-pulse" [class]="sizeClass()">
+        <span class="ring ring-1"></span>
+        <span class="ring ring-2"></span>
+        <span class="ring ring-3"></span>
+      </div>
+    }
+    @case ('bars') {
+      <div class="loader-bars" [class]="sizeClass()">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    }
+  }
+
+  @if (showText() && text()) {
+    <span class="loader-text" [class]="textSizeClass()">{{ text() }}</span>
+  }
+</div>
+

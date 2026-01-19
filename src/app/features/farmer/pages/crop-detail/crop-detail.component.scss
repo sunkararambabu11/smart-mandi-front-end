@@ -1,0 +1,16 @@
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: var(--smc-bg-tertiary);
+  color: var(--smc-text-secondary);
+  text-decoration: none;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--smc-border);
+  }
+}

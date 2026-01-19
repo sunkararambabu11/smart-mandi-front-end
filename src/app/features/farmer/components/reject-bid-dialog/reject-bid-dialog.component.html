@@ -1,0 +1,51 @@
+<div class="reject-dialog">
+  <div class="dialog-header">
+    <div class="icon-wrapper warning">
+      <mat-icon>cancel</mat-icon>
+    </div>
+    <h2>Reject This Bid?</h2>
+    <p class="subtitle">From {{ data.bid.buyerName }}</p>
+  </div>
+
+  <mat-dialog-content>
+    <div class="bid-info">
+      <span class="amount">₹{{ data.bid.amount }}/{{ data.bid.unit }}</span>
+      <span class="quantity">× {{ data.bid.quantity }} {{ data.bid.unit }}</span>
+    </div>
+
+    <div class="reason-section">
+      <p class="label">Reason for rejection (optional)</p>
+      
+      <mat-radio-group [(ngModel)]="selectedReason" class="reason-options">
+        @for (reason of rejectReasons; track reason.value) {
+          <mat-radio-button [value]="reason.value">
+            {{ reason.label }}
+          </mat-radio-button>
+        }
+      </mat-radio-group>
+
+      @if (selectedReason === 'other') {
+        <mat-form-field appearance="outline" class="custom-reason">
+          <mat-label>Custom Reason</mat-label>
+          <textarea 
+            matInput 
+            [(ngModel)]="customReason"
+            rows="2"
+            placeholder="Enter your reason..."
+            maxlength="200"></textarea>
+          <mat-hint align="end">{{ customReason.length }}/200</mat-hint>
+        </mat-form-field>
+      }
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-flat-button color="warn" (click)="onConfirm()">
+      <mat-icon>close</mat-icon>
+      Reject Bid
+    </button>
+  </mat-dialog-actions>
+</div>
+
+

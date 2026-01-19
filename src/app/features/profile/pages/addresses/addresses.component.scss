@@ -1,0 +1,303 @@
+.addresses-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+// ============================================
+// Header
+// ============================================
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  
+  @media (min-width: 640px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.header-content {
+  h1 {
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--smc-text-primary);
+    margin: 0 0 0.25rem;
+  }
+  
+  p {
+    font-size: 0.875rem;
+    color: var(--smc-text-secondary);
+    margin: 0;
+  }
+}
+
+// ============================================
+// Addresses Grid
+// ============================================
+
+.addresses-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// ============================================
+// Address Card
+// ============================================
+
+.address-card {
+  border-radius: 1rem !important;
+  padding: 0 !important;
+  overflow: hidden;
+  transition: all 0.2s;
+  
+  &:hover {
+    box-shadow: var(--smc-shadow-lg);
+  }
+  
+  &.default {
+    border: 2px solid var(--smc-primary);
+    
+    .card-header {
+      background: linear-gradient(135deg, rgba(45, 106, 79, 0.1) 0%, rgba(64, 145, 108, 0.05) 100%);
+    }
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1rem 0.75rem;
+  background: #f9fafb;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.address-type {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  mat-icon {
+    color: var(--smc-primary);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .label {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--smc-text-primary);
+  }
+}
+
+.default-badge {
+  background: var(--smc-primary) !important;
+  color: white !important;
+  font-size: 0.625rem;
+  font-weight: 600;
+  height: 20px !important;
+  padding: 0 0.5rem !important;
+}
+
+.address-details {
+  padding: 1rem 1rem 0.5rem;
+  
+  p {
+    margin: 0 0 0.375rem;
+  }
+  
+  .name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--smc-text-primary);
+    margin-bottom: 0.625rem;
+  }
+  
+  .address-line {
+    font-size: 0.875rem;
+    color: var(--smc-text-secondary);
+  }
+  
+  .landmark,
+  .phone {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--smc-text-muted);
+    margin-top: 0.625rem;
+    
+    mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+  
+  .phone {
+    color: var(--smc-text-secondary);
+  }
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem 1rem;
+  
+  button {
+    font-size: 0.8125rem;
+  }
+}
+
+// ============================================
+// Add Card
+// ============================================
+
+.add-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 2rem !important;
+  border-radius: 1rem !important;
+  border: 2px dashed #e2e8f0;
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 200px;
+  
+  &:hover,
+  &:focus {
+    border-color: var(--smc-primary);
+    background: rgba(45, 106, 79, 0.02);
+  }
+  
+  &:focus {
+    outline: 2px solid var(--smc-primary);
+    outline-offset: 2px;
+  }
+  
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--smc-text-muted);
+    transition: color 0.2s;
+  }
+  
+  span {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--smc-text-secondary);
+  }
+  
+  &:hover mat-icon {
+    color: var(--smc-primary);
+  }
+}
+
+// ============================================
+// Empty State
+// ============================================
+
+.empty-state {
+  border-radius: 1rem !important;
+  padding: 3rem 2rem !important;
+  text-align: center;
+}
+
+.empty-content {
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  mat-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: #9ca3af;
+  }
+}
+
+.empty-state h2 {
+  font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--smc-text-primary);
+  margin: 0 0 0.5rem;
+}
+
+.empty-state p {
+  font-size: 0.875rem;
+  color: var(--smc-text-secondary);
+  margin: 0 0 1.5rem;
+}
+
+// ============================================
+// Info Card
+// ============================================
+
+.info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem !important;
+  border-radius: 0.75rem !important;
+  background: #f0fdf4 !important;
+  border: 1px solid #bbf7d0;
+  
+  > mat-icon {
+    color: var(--smc-primary);
+    margin-top: 0.125rem;
+  }
+  
+  strong {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--smc-text-primary);
+    margin-bottom: 0.25rem;
+  }
+  
+  p {
+    font-size: 0.8125rem;
+    color: var(--smc-text-secondary);
+    margin: 0;
+  }
+}
+
+// ============================================
+// Menu Styling
+// ============================================
+
+.delete-action {
+  color: #ef4444 !important;
+  
+  mat-icon {
+    color: #ef4444;
+  }
+}
+

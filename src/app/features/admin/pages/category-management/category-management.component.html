@@ -1,0 +1,89 @@
+<div class="category-management">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Category Management</h1>
+      <p class="page-subtitle">Manage product categories and subcategories</p>
+    </div>
+    <button mat-raised-button color="primary" (click)="addCategory()">
+      <mat-icon>add</mat-icon>
+      Add Category
+    </button>
+  </header>
+
+  <!-- Search and Filters -->
+  <mat-card class="search-card">
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          placeholder="Search categories..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Categories Grid -->
+  <div class="categories-grid">
+    @for (category of filteredCategories; track category.id) {
+      <mat-card class="category-card" [class.inactive]="!category.isActive">
+        <mat-card-content>
+          <!-- Category Header -->
+          <div class="category-header">
+            <div class="category-icon">
+              <mat-icon>{{ category.icon }}</mat-icon>
+            </div>
+            <mat-slide-toggle
+              [checked]="category.isActive"
+              (change)="toggleCategoryStatus(category)"
+              color="primary"
+            >
+            </mat-slide-toggle>
+          </div>
+
+          <!-- Category Info -->
+          <div class="category-info">
+            <h3 class="category-name">{{ category.name }}</h3>
+            <p class="category-description">{{ category.description }}</p>
+            <div class="category-stats">
+              <span class="product-count">
+                <mat-icon>inventory_2</mat-icon>
+                {{ category.productCount }} products
+              </span>
+            </div>
+          </div>
+
+          <!-- Category Actions -->
+          <div class="category-actions">
+            <button mat-icon-button (click)="editCategory(category)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deleteCategory(category.id)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    } @empty {
+      <div class="empty-state">
+        <mat-icon>category</mat-icon>
+        <h3>No categories found</h3>
+        <p>Try adjusting your search or add a new category.</p>
+        <button mat-raised-button color="primary" (click)="addCategory()">
+          <mat-icon>add</mat-icon>
+          Add Category
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+
+

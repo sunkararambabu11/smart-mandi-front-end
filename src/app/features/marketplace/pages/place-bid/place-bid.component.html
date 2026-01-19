@@ -1,0 +1,276 @@
+<div class="place-bid-page">
+  <!-- Header -->
+  <header class="bid-header">
+    <button mat-icon-button (click)="goBack()" class="back-btn">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="header-content">
+      <h1>Place Your Bid</h1>
+      <p>Submit a competitive offer to the farmer</p>
+    </div>
+  </header>
+
+  @if (isLoading()) {
+    <!-- Loading State -->
+    <div class="loading-state">
+      <mat-spinner diameter="48"></mat-spinner>
+      <p>Loading crop details...</p>
+    </div>
+  } @else if (crop(); as cropData) {
+    <div class="bid-content">
+      <!-- Crop Summary Card -->
+      <div class="crop-summary">
+        <div class="crop-image">
+          <img [src]="cropData.images[0]" [alt]="cropData.cropName" />
+          @if (cropData.isOrganic) {
+            <span class="organic-badge">
+              <mat-icon>eco</mat-icon>
+              Organic
+            </span>
+          }
+        </div>
+        <div class="crop-info">
+          <span class="category">{{ cropData.category }}</span>
+          <h2>{{ cropData.cropName }}</h2>
+          <div class="farmer-info">
+            <div class="farmer-avatar">
+              {{ cropData.farmerName.charAt(0) }}
+            </div>
+            <div>
+              <span class="farmer-name">{{ cropData.farmerName }}</span>
+              <span class="farmer-location">
+                <mat-icon>location_on</mat-icon>
+                {{ cropData.farmerLocation }}
+              </span>
+            </div>
+          </div>
+          <div class="crop-stats">
+            <div class="stat">
+              <span class="label">Market Price</span>
+              <span class="value price">₹{{ cropData.price }}/{{ cropData.unit }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Available</span>
+              <span class="value">{{ cropData.quantity }} {{ cropData.unit }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Harvest Date</span>
+              <span class="value">{{ cropData.harvestDate | date:'mediumDate' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bid Form -->
+      <form [formGroup]="bidForm" (ngSubmit)="onSubmit()" class="bid-form">
+        <!-- Bid Price Section -->
+        <div class="form-section">
+          <h3>
+            <mat-icon>payments</mat-icon>
+            Your Offer
+          </h3>
+          
+          <div class="price-input-group">
+            <mat-form-field appearance="outline" class="price-field">
+              <mat-label>Bid Price per {{ cropData.unit }}</mat-label>
+              <span matPrefix>₹&nbsp;</span>
+              <input
+                matInput
+                type="number"
+                formControlName="bidPrice"
+                [min]="1"
+                placeholder="Enter your bid price"
+              />
+              <span matSuffix>/{{ cropData.unit }}</span>
+              @if (bidForm.get('bidPrice')?.hasError('required')) {
+                <mat-error>Price is required</mat-error>
+              }
+              @if (bidForm.get('bidPrice')?.hasError('min')) {
+                <mat-error>Price must be at least ₹1</mat-error>
+              }
+            </mat-form-field>
+
+            <div class="price-comparison" [class.higher]="getPriceDifference() > 0" [class.lower]="getPriceDifference() < 0">
+              @if (getPriceDifference() !== 0) {
+                <mat-icon>{{ getPriceDifference() > 0 ? 'trending_up' : 'trending_down' }}</mat-icon>
+                <span>
+                  {{ getPriceDifference() > 0 ? '+' : '' }}{{ getPriceDifferencePercent() | number:'1.0-1' }}%
+                  {{ getPriceDifference() > 0 ? 'above' : 'below' }} market
+                </span>
+              } @else {
+                <mat-icon>remove</mat-icon>
+                <span>At market price</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Quantity Section -->
+        <div class="form-section">
+          <h3>
+            <mat-icon>inventory_2</mat-icon>
+            Quantity
+          </h3>
+
+          <mat-form-field appearance="outline" class="quantity-field">
+            <mat-label>Quantity ({{ cropData.unit }})</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="quantity"
+              [min]="1"
+              [max]="maxQuantity()"
+              placeholder="Enter quantity"
+            />
+            <span matSuffix>{{ cropData.unit }}</span>
+            <mat-hint>Max available: {{ cropData.quantity }} {{ cropData.unit }}</mat-hint>
+            @if (bidForm.get('quantity')?.hasError('required')) {
+              <mat-error>Quantity is required</mat-error>
+            }
+            @if (bidForm.get('quantity')?.hasError('min')) {
+              <mat-error>Minimum quantity is 1 {{ cropData.unit }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Delivery Section -->
+        <div class="form-section">
+          <h3>
+            <mat-icon>local_shipping</mat-icon>
+            Delivery Details
+          </h3>
+
+          <div class="delivery-fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Preferred Delivery Date</mat-label>
+              <input
+                matInput
+                [matDatepicker]="picker"
+                formControlName="deliveryDate"
+                [min]="minDeliveryDate"
+                placeholder="Select date"
+              />
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              @if (bidForm.get('deliveryDate')?.hasError('required')) {
+                <mat-error>Delivery date is required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Delivery Location</mat-label>
+              <mat-select formControlName="deliveryLocation" placeholder="Select location">
+                @for (location of deliveryLocations; track location) {
+                  <mat-option [value]="location">{{ location }}</mat-option>
+                }
+              </mat-select>
+              @if (bidForm.get('deliveryLocation')?.hasError('required')) {
+                <mat-error>Delivery location is required</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Message Section -->
+        <div class="form-section">
+          <h3>
+            <mat-icon>message</mat-icon>
+            Message to Farmer
+            <span class="optional">(Optional)</span>
+          </h3>
+
+          <mat-form-field appearance="outline" class="message-field">
+            <mat-label>Your Message</mat-label>
+            <textarea
+              matInput
+              formControlName="message"
+              rows="3"
+              placeholder="Add any special requirements, questions, or notes for the farmer..."
+            ></textarea>
+            <mat-hint>This helps the farmer understand your needs better</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+          <h3>
+            <mat-icon>receipt_long</mat-icon>
+            Bid Summary
+          </h3>
+
+          <div class="summary-items">
+            <div class="summary-row">
+              <span>Price per {{ cropData.unit }}</span>
+              <span>{{ formatCurrency(bidForm.get('bidPrice')?.value || 0) }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Quantity</span>
+              <span>{{ bidForm.get('quantity')?.value || 0 }} {{ cropData.unit }}</span>
+            </div>
+            <div class="summary-row total">
+              <span>Total Bid Amount</span>
+              <span class="total-amount">{{ formatCurrency(totalAmount()) }}</span>
+            </div>
+          </div>
+
+          <div class="terms-checkbox">
+            <mat-checkbox formControlName="acceptTerms" color="primary">
+              I agree to the <a href="#" target="_blank">Terms & Conditions</a> and understand that this bid is binding once accepted by the farmer.
+            </mat-checkbox>
+            @if (bidForm.get('acceptTerms')?.hasError('requiredTrue') && bidForm.get('acceptTerms')?.touched) {
+              <span class="error-text">You must accept the terms to place a bid</span>
+            }
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+          <button
+            mat-stroked-button
+            type="button"
+            (click)="goBack()"
+            [disabled]="isSubmitting()"
+          >
+            <mat-icon>close</mat-icon>
+            Cancel
+          </button>
+
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="bidForm.invalid || isSubmitting()"
+            class="submit-btn"
+          >
+            @if (isSubmitting()) {
+              <mat-spinner diameter="20"></mat-spinner>
+              <span>Placing Bid...</span>
+            } @else {
+              <mat-icon>gavel</mat-icon>
+              <span>Place Bid - {{ formatCurrency(totalAmount()) }}</span>
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  } @else {
+    <!-- Error State -->
+    <div class="error-state">
+      <mat-icon>error_outline</mat-icon>
+      <h3>Crop not found</h3>
+      <p>The crop you're looking for doesn't exist or has been removed.</p>
+      <button mat-flat-button color="primary" routerLink="/marketplace">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Marketplace
+      </button>
+    </div>
+  }
+</div>

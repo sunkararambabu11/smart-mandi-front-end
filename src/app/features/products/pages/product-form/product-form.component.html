@@ -1,0 +1,383 @@
+<div class="product-form-page">
+  <!-- Header -->
+  <header class="page-header">
+    <a routerLink="/products" class="back-link">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Products
+    </a>
+    <div class="header-content">
+      <h1>{{ isEditMode() ? 'Edit Product' : 'Add New Product' }}</h1>
+      <p>{{ isEditMode() ? 'Update your product details' : 'List a new product for sale' }}</p>
+    </div>
+  </header>
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+      <p>Loading product...</p>
+    </div>
+  } @else {
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="form-layout">
+      <!-- Left Column: Main Details -->
+      <div class="main-column">
+        <!-- Basic Info Card -->
+        <mat-card class="form-card">
+          <div class="card-header">
+            <mat-icon>info</mat-icon>
+            <h2>Basic Information</h2>
+          </div>
+
+          <div class="form-content">
+            <!-- Product Name -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Product Name</mat-label>
+              <input 
+                matInput 
+                formControlName="name" 
+                placeholder="e.g., Fresh Organic Tomatoes"
+                maxlength="100" />
+              <mat-hint align="end">{{ productForm.get('name')?.value?.length || 0 }}/100</mat-hint>
+              @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
+                <mat-error>{{ getErrorMessage('name') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Category -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Category</mat-label>
+              <mat-select formControlName="category">
+                @for (cat of categories; track cat.id) {
+                  <mat-option [value]="cat.id">
+                    {{ cat.icon }} {{ cat.name }}
+                  </mat-option>
+                }
+              </mat-select>
+              @if (productForm.get('category')?.invalid && productForm.get('category')?.touched) {
+                <mat-error>Please select a category</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Description -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Description</mat-label>
+              <textarea
+                matInput
+                formControlName="description"
+                rows="4"
+                placeholder="Describe your product, its quality, and any special features..."
+                maxlength="1000">
+              </textarea>
+              <mat-hint align="end">{{ productForm.get('description')?.value?.length || 0 }}/1000</mat-hint>
+              @if (productForm.get('description')?.invalid && productForm.get('description')?.touched) {
+                <mat-error>{{ getErrorMessage('description') }}</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </mat-card>
+
+        <!-- Pricing Card -->
+        <mat-card class="form-card">
+          <div class="card-header">
+            <mat-icon>payments</mat-icon>
+            <h2>Pricing & Quantity</h2>
+          </div>
+
+          <div class="form-content">
+            <div class="form-row">
+              <!-- Price -->
+              <mat-form-field appearance="outline">
+                <mat-label>Price (₹)</mat-label>
+                <input 
+                  matInput 
+                  type="number" 
+                  formControlName="price"
+                  placeholder="45" />
+                <span matTextPrefix>₹&nbsp;</span>
+                @if (productForm.get('price')?.invalid && productForm.get('price')?.touched) {
+                  <mat-error>{{ getErrorMessage('price') }}</mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Unit -->
+              <mat-form-field appearance="outline">
+                <mat-label>Unit</mat-label>
+                <mat-select formControlName="unit">
+                  @for (unit of units; track unit.value) {
+                    <mat-option [value]="unit.value">{{ unit.label }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <!-- Available Quantity -->
+              <mat-form-field appearance="outline">
+                <mat-label>Available Quantity</mat-label>
+                <input 
+                  matInput 
+                  type="number" 
+                  formControlName="quantity"
+                  placeholder="100" />
+                @if (productForm.get('quantity')?.invalid && productForm.get('quantity')?.touched) {
+                  <mat-error>{{ getErrorMessage('quantity') }}</mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Min Order Quantity -->
+              <mat-form-field appearance="outline">
+                <mat-label>Minimum Order</mat-label>
+                <input 
+                  matInput 
+                  type="number" 
+                  formControlName="minOrderQuantity"
+                  placeholder="1" />
+              </mat-form-field>
+            </div>
+
+            <!-- Negotiable Toggle -->
+            <mat-checkbox formControlName="negotiable" color="primary">
+              Price is negotiable
+            </mat-checkbox>
+          </div>
+        </mat-card>
+
+        <!-- Quality Card -->
+        <mat-card class="form-card">
+          <div class="card-header">
+            <mat-icon>verified</mat-icon>
+            <h2>Quality & Details</h2>
+          </div>
+
+          <div class="form-content">
+            <!-- Quality Grade -->
+            <div class="quality-selector">
+              <label>Quality Grade</label>
+              <div class="quality-options">
+                @for (q of qualities; track q.value) {
+                  <button 
+                    type="button"
+                    class="quality-option"
+                    [class.selected]="productForm.get('quality')?.value === q.value"
+                    (click)="productForm.get('quality')?.setValue(q.value)"
+                    [matTooltip]="q.description">
+                    <span class="quality-label">{{ q.label }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+
+            <!-- Organic Checkbox -->
+            <mat-checkbox formControlName="isOrganic" color="primary" class="organic-checkbox">
+              <span class="checkbox-content">
+                <mat-icon>eco</mat-icon>
+                This is an organic product
+              </span>
+            </mat-checkbox>
+
+            <div class="form-row">
+              <!-- Harvest Date -->
+              <mat-form-field appearance="outline">
+                <mat-label>Harvest Date</mat-label>
+                <input 
+                  matInput 
+                  [matDatepicker]="harvestPicker" 
+                  formControlName="harvestDate" />
+                <mat-datepicker-toggle matIconSuffix [for]="harvestPicker"></mat-datepicker-toggle>
+                <mat-datepicker #harvestPicker></mat-datepicker>
+              </mat-form-field>
+
+              <!-- Expiry Days -->
+              <mat-form-field appearance="outline">
+                <mat-label>Best Before (days)</mat-label>
+                <input 
+                  matInput 
+                  type="number" 
+                  formControlName="expiryDays"
+                  placeholder="7" />
+                <mat-hint>Days from harvest</mat-hint>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card>
+
+        <!-- Location Card -->
+        <mat-card class="form-card">
+          <div class="card-header">
+            <mat-icon>location_on</mat-icon>
+            <h2>Location & Delivery</h2>
+          </div>
+
+          <div class="form-content">
+            <!-- Village -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Village/Town</mat-label>
+              <input 
+                matInput 
+                formControlName="village"
+                placeholder="e.g., Rampur" />
+              <mat-icon matSuffix>home</mat-icon>
+              @if (productForm.get('village')?.invalid && productForm.get('village')?.touched) {
+                <mat-error>Village is required</mat-error>
+              }
+            </mat-form-field>
+
+            <div class="form-row">
+              <!-- District -->
+              <mat-form-field appearance="outline">
+                <mat-label>District</mat-label>
+                <input 
+                  matInput 
+                  formControlName="district"
+                  placeholder="e.g., Azamgarh" />
+                <mat-icon matSuffix>location_city</mat-icon>
+                @if (productForm.get('district')?.invalid && productForm.get('district')?.touched) {
+                  <mat-error>District is required</mat-error>
+                }
+              </mat-form-field>
+
+              <!-- State -->
+              <mat-form-field appearance="outline">
+                <mat-label>State</mat-label>
+                <mat-select formControlName="state">
+                  @for (state of states; track state.value) {
+                    <mat-option [value]="state.value">{{ state.label }}</mat-option>
+                  }
+                </mat-select>
+                @if (productForm.get('state')?.invalid && productForm.get('state')?.touched) {
+                  <mat-error>State is required</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <!-- Pincode -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Pincode</mat-label>
+              <input 
+                matInput 
+                formControlName="pincode"
+                placeholder="e.g., 276001"
+                maxlength="6"
+                pattern="[0-9]*" />
+              <mat-icon matSuffix>pin_drop</mat-icon>
+              @if (productForm.get('pincode')?.invalid && productForm.get('pincode')?.touched) {
+                <mat-error>Enter valid 6-digit pincode</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Delivery Checkbox -->
+            <mat-checkbox formControlName="deliveryAvailable" color="primary">
+              <span class="checkbox-content">
+                <mat-icon>local_shipping</mat-icon>
+                Delivery available
+              </span>
+            </mat-checkbox>
+          </div>
+        </mat-card>
+      </div>
+
+      <!-- Right Column: Images & Preview -->
+      <div class="side-column">
+        <!-- Image Upload Card -->
+        <mat-card class="form-card">
+          <div class="card-header">
+            <mat-icon>photo_library</mat-icon>
+            <h2>Product Images</h2>
+          </div>
+
+          <div class="form-content">
+            <!-- Upload Zone -->
+            <div
+              class="upload-zone"
+              [class.dragging]="isDragging()"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event)"
+              (click)="fileInput.click()">
+              <input
+                #fileInput
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+                hidden
+                (change)="onFileSelect($event)" />
+              <mat-icon>cloud_upload</mat-icon>
+              <p class="upload-text">Drag & drop images here</p>
+              <p class="upload-hint">or click to browse</p>
+              <span class="upload-info">PNG, JPG up to 5MB • Max 5 images</span>
+            </div>
+
+            <!-- Uploaded Images -->
+            @if (uploadedImages().length > 0) {
+              <div class="uploaded-images">
+                @for (img of uploadedImages(); track img; let i = $index) {
+                  <div class="image-preview">
+                    <img [src]="img" alt="Product image {{ i + 1 }}" />
+                    @if (i === 0) {
+                      <span class="main-badge">Main</span>
+                    }
+                    <button 
+                      type="button"
+                      class="remove-btn" 
+                      (click)="removeImage(i)"
+                      aria-label="Remove image">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+
+            <p class="image-tip">
+              <mat-icon>lightbulb</mat-icon>
+              First image will be used as the main product photo
+            </p>
+          </div>
+        </mat-card>
+
+        <!-- Quick Tips Card -->
+        <mat-card class="tips-card">
+          <h3>
+            <mat-icon>tips_and_updates</mat-icon>
+            Quick Tips
+          </h3>
+          <ul>
+            <li>Use clear, high-quality photos</li>
+            <li>Write detailed descriptions</li>
+            <li>Set competitive prices</li>
+            <li>Update stock regularly</li>
+            <li>Respond to bids quickly</li>
+          </ul>
+        </mat-card>
+      </div>
+    </form>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button mat-stroked-button type="button" (click)="onCancel()">
+        Cancel
+      </button>
+      <button 
+        mat-stroked-button 
+        type="button" 
+        (click)="onSubmit(true)"
+        [disabled]="isSaving()">
+        <mat-icon>save</mat-icon>
+        Save as Draft
+      </button>
+      <button 
+        mat-raised-button 
+        color="primary"
+        type="submit"
+        (click)="onSubmit()"
+        [disabled]="isSaving()">
+        @if (isSaving()) {
+          <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+        } @else {
+          <mat-icon>publish</mat-icon>
+        }
+        {{ isEditMode() ? 'Update Product' : 'Publish Product' }}
+      </button>
+    </div>
+  }
+</div>
+

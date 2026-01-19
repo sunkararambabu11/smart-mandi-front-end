@@ -1,0 +1,219 @@
+@if (isLoading()) {
+  <div class="loading-container">
+    <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+    <p>Loading product...</p>
+  </div>
+} @else if (product(); as p) {
+  <div class="product-detail-page">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a routerLink="/products">My Products</a>
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{ p.name }}</span>
+    </nav>
+
+    <div class="detail-layout">
+      <!-- Left: Image Gallery -->
+      <section class="gallery-section">
+        <mat-card class="gallery-card">
+          <!-- Main Image -->
+          <div class="main-image">
+            @if (p.images.length > 0) {
+              <img [src]="p.images[selectedImageIndex()]" [alt]="p.name" />
+            } @else {
+              <div class="image-placeholder">
+                <mat-icon>eco</mat-icon>
+              </div>
+            }
+            
+            <!-- Badges -->
+            <div class="image-badges">
+              @if (p.isOrganic) {
+                <span class="organic-badge">
+                  <mat-icon>eco</mat-icon> Organic
+                </span>
+              }
+              <span class="quality-badge">{{ p.quality }}</span>
+            </div>
+
+            <!-- Status -->
+            <span class="status-badge" [class]="p.status">
+              {{ p.status | titlecase }}
+            </span>
+          </div>
+
+          <!-- Thumbnails -->
+          @if (p.images.length > 1) {
+            <div class="thumbnails">
+              @for (img of p.images; track img; let i = $index) {
+                <button 
+                  class="thumbnail"
+                  [class.active]="selectedImageIndex() === i"
+                  (click)="selectImage(i)"
+                  [attr.aria-label]="'View image ' + (i + 1)">
+                  <img [src]="img" [alt]="p.name + ' thumbnail ' + (i + 1)" />
+                </button>
+              }
+            </div>
+          }
+        </mat-card>
+      </section>
+
+      <!-- Right: Product Info -->
+      <section class="info-section">
+        <mat-card class="info-card">
+          <!-- Header -->
+          <div class="product-header">
+            <span class="category">{{ p.category }}</span>
+            <h1 class="product-name">{{ p.name }}</h1>
+            
+            <div class="product-stats">
+              <span><mat-icon>visibility</mat-icon> {{ p.viewCount }} views</span>
+              <span><mat-icon>gavel</mat-icon> {{ p.bidCount }} bids</span>
+              <span><mat-icon>location_on</mat-icon> {{ p.location }}</span>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Price & Quantity -->
+          <div class="price-section">
+            <div class="price">
+              <span class="amount">₹{{ p.price }}</span>
+              <span class="unit">/{{ p.unit }}</span>
+            </div>
+            <div class="quantity-info">
+              <mat-icon>scale</mat-icon>
+              <span>{{ p.quantity }} {{ p.unit }} available</span>
+            </div>
+          </div>
+
+          <!-- Highest Bid -->
+          @if (highestBid) {
+            <div class="highest-bid">
+              <mat-icon>trending_up</mat-icon>
+              <div>
+                <span class="bid-label">Highest Bid</span>
+                <span class="bid-amount">₹{{ highestBid.amount }}/{{ p.unit }}</span>
+              </div>
+            </div>
+          }
+
+          <mat-divider></mat-divider>
+
+          <!-- Quick Info -->
+          <div class="quick-info">
+            <div class="info-item">
+              <mat-icon>event</mat-icon>
+              <div>
+                <span class="label">Harvest Date</span>
+                <span class="value">{{ p.harvestDate | date:'mediumDate' }}</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <mat-icon>schedule</mat-icon>
+              <div>
+                <span class="label">Listed On</span>
+                <span class="value">{{ p.createdAt | date:'mediumDate' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Description -->
+          <div class="description">
+            <h2>Description</h2>
+            <p>{{ p.description }}</p>
+          </div>
+
+          <!-- Actions -->
+          <div class="product-actions">
+            <a [routerLink]="['/products', p.id, 'edit']" mat-raised-button color="primary">
+              <mat-icon>edit</mat-icon>
+              Edit Product
+            </a>
+            <button mat-stroked-button>
+              <mat-icon>share</mat-icon>
+              Share
+            </button>
+          </div>
+        </mat-card>
+      </section>
+    </div>
+
+    <!-- Bids Section -->
+    <section class="bids-section">
+      <mat-card class="bids-card">
+        <div class="bids-header">
+          <h2>
+            <mat-icon>gavel</mat-icon>
+            Bids Received
+          </h2>
+          <mat-chip>{{ pendingBids.length }} Pending</mat-chip>
+        </div>
+
+        @if (bids().length === 0) {
+          <div class="no-bids">
+            <mat-icon>inbox</mat-icon>
+            <p>No bids received yet</p>
+          </div>
+        } @else {
+          <div class="bids-list">
+            @for (bid of bids(); track trackByBidId($index, bid)) {
+              <div class="bid-item" [class]="bid.status">
+                <div class="buyer-info">
+                  <div class="buyer-avatar">
+                    {{ bid.buyerName.charAt(0) }}
+                  </div>
+                  <div class="buyer-details">
+                    <span class="buyer-name">{{ bid.buyerName }}</span>
+                    <span class="bid-time">{{ bid.createdAt | date:'short' }}</span>
+                  </div>
+                </div>
+
+                <div class="bid-info">
+                  <div class="bid-amount-block">
+                    <span class="bid-amount">₹{{ bid.amount }}/{{ product()?.unit }}</span>
+                    <span class="bid-quantity">for {{ bid.quantity }} {{ product()?.unit }}</span>
+                  </div>
+                  @if (bid.message) {
+                    <p class="bid-message">"{{ bid.message }}"</p>
+                  }
+                </div>
+
+                <div class="bid-actions">
+                  @switch (bid.status) {
+                    @case ('pending') {
+                      <button mat-raised-button color="primary" (click)="onAcceptBid(bid)">
+                        <mat-icon>check</mat-icon>
+                        Accept
+                      </button>
+                      <button mat-stroked-button color="warn" (click)="onRejectBid(bid)">
+                        <mat-icon>close</mat-icon>
+                        Reject
+                      </button>
+                    }
+                    @case ('accepted') {
+                      <mat-chip class="status-chip accepted">
+                        <mat-icon>check_circle</mat-icon>
+                        Accepted
+                      </mat-chip>
+                    }
+                    @case ('rejected') {
+                      <mat-chip class="status-chip rejected">
+                        <mat-icon>cancel</mat-icon>
+                        Rejected
+                      </mat-chip>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </mat-card>
+    </section>
+  </div>
+}
+

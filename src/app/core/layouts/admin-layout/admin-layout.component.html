@@ -1,0 +1,107 @@
+<mat-sidenav-container class="h-screen">
+  <!-- Sidebar -->
+  <mat-sidenav
+    #sidenav
+    mode="side"
+    opened
+    class="w-64 border-r border-gray-200 bg-gray-900"
+  >
+    <!-- Logo -->
+    <div class="p-4 border-b border-gray-700">
+      <a routerLink="/admin" class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center">
+          <mat-icon class="text-white">admin_panel_settings</mat-icon>
+        </div>
+        <div>
+          <h1 class="font-display font-bold text-white text-lg leading-tight">
+            Admin Panel
+          </h1>
+          <span class="text-xs text-gray-400">Smart Mandi Connect</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="p-3 flex-1">
+      <ul class="space-y-1">
+        @for (item of navItems; track item.route) {
+          <li>
+            <a
+              [routerLink]="item.route"
+              routerLinkActive="bg-primary-600 text-white"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 
+                     hover:bg-gray-800 transition-colors"
+            >
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <span class="font-medium">{{ item.label }}</span>
+              @if (item.badge) {
+                <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  {{ item.badge }}
+                </span>
+              }
+            </a>
+          </li>
+        }
+      </ul>
+
+      <mat-divider class="my-4 border-gray-700"></mat-divider>
+
+      <!-- Back to Main App -->
+      <a
+        routerLink="/dashboard"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-300 
+               hover:bg-gray-800 transition-colors"
+      >
+        <mat-icon>arrow_back</mat-icon>
+        <span class="font-medium">Back to App</span>
+      </a>
+    </nav>
+  </mat-sidenav>
+
+  <!-- Main Content -->
+  <mat-sidenav-content class="flex flex-col bg-gray-100">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white border-b border-gray-200 px-6">
+      <div class="flex items-center justify-between h-16">
+        <h2 class="font-display font-semibold text-gray-900 text-xl">
+          Admin Dashboard
+        </h2>
+
+        <!-- User Menu -->
+        <button mat-button [matMenuTriggerFor]="userMenu">
+          <div class="flex items-center gap-2">
+            <div
+              class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center
+                     text-primary-700 font-semibold text-sm"
+            >
+              {{ authService.displayName().charAt(0).toUpperCase() }}
+            </div>
+            <span class="text-sm font-medium">
+              {{ authService.displayName() }}
+            </span>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </div>
+        </button>
+
+        <mat-menu #userMenu="matMenu">
+          <a mat-menu-item routerLink="/profile">
+            <mat-icon>person</mat-icon>
+            <span>My Profile</span>
+          </a>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="authService.logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="flex-1 p-6 overflow-auto">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+

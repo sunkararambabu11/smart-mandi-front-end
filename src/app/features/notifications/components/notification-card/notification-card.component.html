@@ -1,0 +1,85 @@
+<div
+  class="notification-card"
+  [class.unread]="!notification().isRead"
+  [class.high-priority]="isHighPriority()"
+  matRipple
+  (click)="onCardClick()">
+  <!-- Unread Indicator -->
+  @if (!notification().isRead) {
+    <div class="unread-dot"></div>
+  }
+
+  <!-- Icon -->
+  <div class="notification-icon" [style.background-color]="typeConfig().color + '20'">
+    <mat-icon [style.color]="typeConfig().color">
+      {{ notification().icon }}
+    </mat-icon>
+  </div>
+
+  <!-- Content -->
+  <div class="notification-content">
+    <div class="notification-header">
+      <h4 class="notification-title">{{ notification().title }}</h4>
+      <span class="notification-time" [matTooltip]="notification().createdAt | date:'medium'">
+        {{ timeAgo() }}
+      </span>
+    </div>
+
+    <p class="notification-message">{{ notification().message }}</p>
+
+    <!-- Image Preview -->
+    @if (notification().imageUrl) {
+      <div class="notification-image">
+        <img [src]="notification().imageUrl" [alt]="notification().title" />
+      </div>
+    }
+
+    <!-- Action Button -->
+    @if (notification().actionUrl && notification().actionLabel) {
+      <a
+        [routerLink]="notification().actionUrl"
+        class="notification-action"
+        (click)="$event.stopPropagation()">
+        {{ notification().actionLabel }}
+        <mat-icon>arrow_forward</mat-icon>
+      </a>
+    }
+
+    <!-- Type Badge -->
+    <div class="notification-footer">
+      <span class="type-badge" [style.color]="typeConfig().color">
+        <mat-icon>{{ typeConfig().icon }}</mat-icon>
+        {{ typeConfig().label }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Actions Menu -->
+  <button
+    mat-icon-button
+    class="actions-btn"
+    [matMenuTriggerFor]="actionsMenu"
+    (click)="$event.stopPropagation()">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+
+  <mat-menu #actionsMenu="matMenu">
+    @if (!notification().isRead) {
+      <button mat-menu-item (click)="onMarkAsRead()">
+        <mat-icon>done</mat-icon>
+        Mark as read
+      </button>
+    }
+    @if (notification().actionUrl) {
+      <button mat-menu-item [routerLink]="notification().actionUrl">
+        <mat-icon>open_in_new</mat-icon>
+        {{ notification().actionLabel || 'View' }}
+      </button>
+    }
+    <button mat-menu-item class="delete-item" (click)="onDelete()">
+      <mat-icon>delete</mat-icon>
+      Delete
+    </button>
+  </mat-menu>
+</div>
+

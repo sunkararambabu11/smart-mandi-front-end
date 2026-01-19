@@ -1,0 +1,202 @@
+.farmer-card {
+  padding: 1.25rem;
+  border-radius: 16px;
+}
+
+.farmer-header {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.farmer-avatar {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #81c784 0%, #4caf50 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .initials {
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .verified-badge {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #1976d2;
+    background: white;
+    border-radius: 50%;
+  }
+}
+
+.farmer-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.farmer-name {
+  margin: 0 0 0.25rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+
+  &:hover {
+    color: #1b5e20;
+  }
+}
+
+.farmer-location {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+  color: #666;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.rating-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+
+  .star {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+
+    &.filled {
+      color: #ffc107;
+    }
+
+    &.half {
+      color: #ffc107;
+    }
+
+    &.empty {
+      color: #e0e0e0;
+    }
+  }
+
+  .rating-value {
+    margin-left: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #333;
+  }
+}
+
+.order-count {
+  font-size: 0.8125rem;
+  color: #666;
+}
+
+mat-divider {
+  margin: 1rem 0;
+}
+
+.stats-section {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    mat-icon {
+      color: #1b5e20;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .value {
+      display: block;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .label {
+      display: block;
+      font-size: 0.75rem;
+      color: #666;
+    }
+  }
+}
+
+.languages-section {
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+
+  .label {
+    color: #666;
+  }
+
+  .languages {
+    color: #333;
+    margin-left: 0.25rem;
+  }
+}
+
+.member-since {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #666;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+
+  button {
+    flex: 1;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      margin-right: 0.25rem;
+    }
+  }
+}

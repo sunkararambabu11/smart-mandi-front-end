@@ -1,0 +1,438 @@
+/**
+ * Order Card Styles
+ */
+
+.order-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-left: 4px solid #e0e0e0;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+
+  &.active {
+    border-left-color: #2196f3;
+  }
+
+  &.delivered {
+    border-left-color: #4caf50;
+  }
+
+  &.cancelled {
+    border-left-color: #f44336;
+    opacity: 0.85;
+  }
+
+  &.compact {
+    .card-content {
+      padding: 0.75rem;
+    }
+
+    .items-section {
+      margin-bottom: 0;
+    }
+
+    .item-image {
+      width: 48px;
+      height: 48px;
+    }
+
+    .item-name {
+      font-size: 0.9375rem;
+    }
+  }
+}
+
+// ============================================
+// Status Ribbon
+// ============================================
+
+.status-ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 0 0 0 12px;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  &.primary {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+
+  &.accent {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.warn {
+    background: #fff3e0;
+    color: #e65100;
+  }
+
+  &.success {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &.error {
+    background: #ffebee;
+    color: #c62828;
+  }
+}
+
+// ============================================
+// Card Content
+// ============================================
+
+.card-content {
+  padding: 1rem;
+
+  @media (min-width: 768px) {
+    padding: 1.25rem;
+  }
+}
+
+// ============================================
+// Header
+// ============================================
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.order-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  .order-number {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .order-date {
+    font-size: 0.75rem;
+    color: #999;
+  }
+}
+
+// ============================================
+// Items Section
+// ============================================
+
+.items-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #fafafa;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.item-image {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #e0e0e0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  mat-icon {
+    font-size: 32px;
+    color: #999;
+  }
+
+  .item-count {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 0.625rem;
+    font-weight: 600;
+    border-radius: 4px;
+  }
+}
+
+.item-details {
+  flex: 1;
+  min-width: 0;
+
+  .item-name {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-quantity {
+    margin: 0.25rem 0 0;
+    font-size: 0.8125rem;
+    color: #666;
+  }
+}
+
+.item-price {
+  text-align: right;
+
+  .total-amount {
+    display: block;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1b5e20;
+  }
+
+  .payment-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    padding: 0.125rem 0.5rem;
+    border-radius: 12px;
+    margin-top: 0.25rem;
+
+    mat-icon {
+      font-size: 12px;
+      width: 12px;
+      height: 12px;
+    }
+
+    &.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    &.warn {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    &.error {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    &.primary {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+  }
+}
+
+// ============================================
+// Party Section
+// ============================================
+
+.party-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.party-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #81c784 0%, #4caf50 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .initials {
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+}
+
+.party-info {
+  flex: 1;
+  min-width: 0;
+
+  .party-label {
+    display: block;
+    font-size: 0.6875rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .party-name {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .party-location {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    font-size: 0.75rem;
+    color: #666;
+
+    mat-icon {
+      font-size: 12px;
+      width: 12px;
+      height: 12px;
+    }
+  }
+}
+
+.party-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: #ffc107;
+  border-radius: 12px;
+  color: #333;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    color: #333;
+  }
+}
+
+// ============================================
+// Delivery Section
+// ============================================
+
+.delivery-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: #e3f2fd;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+
+  > mat-icon {
+    color: #1976d2;
+  }
+
+  .delivery-info {
+    flex: 1;
+
+    .delivery-text {
+      display: block;
+      font-size: 0.875rem;
+      color: #333;
+
+      &.urgent {
+        color: #2e7d32;
+        font-weight: 600;
+      }
+    }
+
+    .tracking-id {
+      display: block;
+      font-size: 0.75rem;
+      color: #666;
+      margin-top: 0.125rem;
+    }
+  }
+}
+
+// ============================================
+// Farmer Actions
+// ============================================
+
+.farmer-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  button {
+    flex: 1;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      margin-right: 0.25rem;
+    }
+  }
+}
+
+// ============================================
+// Footer
+// ============================================
+
+.card-footer {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f0f0f0;
+
+  button {
+    flex: 1;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      margin-right: 0.25rem;
+    }
+  }
+}
+
+// ============================================
+// Menu Styles
+// ============================================
+
+.cancel-item {
+  color: #c62828 !important;
+}
+
+
+

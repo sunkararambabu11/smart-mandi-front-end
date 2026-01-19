@@ -1,0 +1,375 @@
+.otp-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 50%, #40916c 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+// Background Pattern
+.background-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+// OTP Container
+.otp-container {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Back Button
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  align-self: flex-start;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  mat-icon {
+    font-size: 1.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+}
+
+// OTP Card
+.otp-card {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+
+  .card-header {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    .otp-icon {
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--smc-primary) 0%, var(--smc-primary-light) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      mat-icon {
+        color: white;
+        font-size: 2rem;
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+
+    h2 {
+      font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--smc-text-primary);
+      margin: 0 0 0.5rem;
+    }
+
+    p {
+      color: var(--smc-text-secondary);
+      font-size: 0.875rem;
+      margin: 0;
+      line-height: 1.5;
+
+      strong {
+        color: var(--smc-primary);
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+// OTP Form
+.otp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+// OTP Inputs
+.otp-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+
+  @media (min-width: 400px) {
+    gap: 0.75rem;
+  }
+}
+
+.otp-input {
+  width: 3rem;
+  height: 3.5rem;
+  border: 2px solid var(--smc-border);
+  border-radius: 0.75rem;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--smc-text-primary);
+  transition: all 0.2s ease;
+  caret-color: var(--smc-primary);
+
+  @media (min-width: 400px) {
+    width: 3.25rem;
+    height: 4rem;
+    font-size: 1.75rem;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--smc-primary);
+    box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
+    transform: scale(1.05);
+  }
+
+  &.filled {
+    border-color: var(--smc-primary);
+    background: #f0fdf4;
+  }
+
+  &.error {
+    border-color: var(--smc-error);
+    background: #fee2e2;
+    animation: shake 0.4s ease;
+  }
+
+  &::placeholder {
+    color: var(--smc-text-muted);
+    opacity: 0.5;
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+}
+
+// Error Message
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #fee2e2;
+  border-radius: 0.5rem;
+  color: #dc2626;
+  font-size: 0.875rem;
+
+  mat-icon {
+    font-size: 1.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+}
+
+// Timer Section
+.timer-section {
+  text-align: center;
+
+  .timer-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--smc-text-secondary);
+    font-size: 0.875rem;
+    margin: 0;
+
+    mat-icon {
+      font-size: 1rem;
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .countdown {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--smc-primary);
+    }
+  }
+
+  .resend-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 2px solid var(--smc-primary);
+    border-radius: 0.5rem;
+    color: var(--smc-primary);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--smc-primary);
+      color: white;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    mat-icon {
+      font-size: 1rem;
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+}
+
+// Verify Button
+.verify-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, var(--smc-primary) 0%, var(--smc-primary-light) 100%);
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 106, 79, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  mat-spinner {
+    ::ng-deep circle {
+      stroke: white;
+    }
+  }
+
+  mat-icon {
+    font-size: 1.25rem;
+  }
+}
+
+// Help Section
+.help-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--smc-border);
+  text-align: center;
+
+  p {
+    color: var(--smc-text-secondary);
+    font-size: 0.875rem;
+    margin: 0 0 0.75rem;
+    font-weight: 500;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+
+    li {
+      font-size: 0.75rem;
+      color: var(--smc-text-muted);
+
+      &::before {
+        content: '•';
+        margin-right: 0.5rem;
+        color: var(--smc-primary);
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .otp-page {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+
+  .otp-card {
+    padding: 1.5rem;
+  }
+
+  .otp-inputs {
+    gap: 0.375rem;
+  }
+
+  .otp-input {
+    width: 2.5rem;
+    height: 3rem;
+    font-size: 1.25rem;
+  }
+}
+
+
+

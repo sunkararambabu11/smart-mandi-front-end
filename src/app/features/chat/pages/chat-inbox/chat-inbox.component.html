@@ -1,0 +1,55 @@
+<div class="chat-inbox-container">
+  <header class="inbox-header">
+    <h1>Messages</h1>
+    @if (totalUnread() > 0) {
+      <span class="unread-badge">{{ totalUnread() }} unread</span>
+    }
+  </header>
+
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Loading conversations...</p>
+    </div>
+  } @else if (threads().length === 0) {
+    <mat-card class="empty-state">
+      <mat-card-content>
+        <mat-icon>chat_bubble_outline</mat-icon>
+        <h2>No messages yet</h2>
+        <p>When you start a conversation with a buyer or seller, it will appear here.</p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <mat-card class="threads-card">
+      <mat-nav-list>
+        @for (thread of threads(); track trackByThread($index, thread)) {
+          <a mat-list-item [routerLink]="['/chat', thread.recipientId]" class="thread-item">
+            <div class="avatar-container" matListItemAvatar>
+              <div class="avatar" [class.online]="thread.isOnline">
+                {{ thread.recipientName.charAt(0) }}
+              </div>
+              @if (thread.isOnline) {
+                <span class="online-indicator"></span>
+              }
+            </div>
+            
+            <div matListItemTitle class="thread-header">
+              <span class="recipient-name">{{ thread.recipientName }}</span>
+              <span class="time">{{ formatRelativeTime(thread.lastMessageTime) }}</span>
+            </div>
+            
+            <div matListItemLine class="thread-preview">
+              <span class="last-message" [class.unread]="thread.unreadCount > 0">
+                {{ thread.lastMessage }}
+              </span>
+              @if (thread.unreadCount > 0) {
+                <span class="unread-count" [matBadge]="thread.unreadCount" matBadgeSize="small"></span>
+              }
+            </div>
+          </a>
+        }
+      </mat-nav-list>
+    </mat-card>
+  }
+</div>
+

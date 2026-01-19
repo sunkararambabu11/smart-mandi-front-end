@@ -1,0 +1,121 @@
+<div class="admin-dashboard">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Admin Dashboard</h1>
+      <p class="page-subtitle">Welcome back! Here's what's happening today.</p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button>
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+      <button mat-raised-button color="primary" [matMenuTriggerFor]="actionsMenu">
+        <mat-icon>add</mat-icon>
+        Quick Actions
+      </button>
+      <mat-menu #actionsMenu="matMenu">
+        @for (action of quickActions; track action.label) {
+          @if (action.link) {
+            <a mat-menu-item [routerLink]="action.link">
+              <mat-icon>{{ action.icon }}</mat-icon>
+              <span>{{ action.label }}</span>
+            </a>
+          } @else {
+            <button mat-menu-item (click)="onQuickAction(action.action!)">
+              <mat-icon>{{ action.icon }}</mat-icon>
+              <span>{{ action.label }}</span>
+            </button>
+          }
+        }
+      </mat-menu>
+    </div>
+  </header>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    @for (stat of stats(); track stat.title) {
+      <mat-card class="stat-card" [routerLink]="stat.link">
+        <mat-card-content>
+          <div class="stat-header">
+            <div class="stat-icon" [attr.data-color]="stat.color">
+              <mat-icon>{{ stat.icon }}</mat-icon>
+            </div>
+            <span
+              class="stat-change"
+              [class.positive]="stat.trend === 'up'"
+              [class.negative]="stat.trend === 'down'"
+            >
+              <mat-icon>{{
+                stat.trend === 'up' ? 'trending_up' : 'trending_down'
+              }}</mat-icon>
+              {{ stat.change }}
+            </span>
+          </div>
+          <div class="stat-value">{{ stat.value }}</div>
+          <div class="stat-title">{{ stat.title }}</div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="content-grid">
+    <!-- Activity Feed -->
+    <mat-card class="activity-card">
+      <mat-card-header>
+        <mat-card-title>Recent Activity</mat-card-title>
+        <button mat-icon-button class="view-all-btn">
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="activity-list">
+          @for (activity of recentActivity(); track activity.id) {
+            <div class="activity-item">
+              <div class="activity-icon" [attr.data-type]="activity.type">
+                <mat-icon>{{ activity.icon }}</mat-icon>
+              </div>
+              <div class="activity-content">
+                <p class="activity-message">{{ activity.message }}</p>
+                <span class="activity-time">{{
+                  formatRelativeTime(activity.timestamp)
+                }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Quick Stats -->
+    <mat-card class="quick-stats-card">
+      <mat-card-header>
+        <mat-card-title>Quick Overview</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="quick-stats-list">
+          <div class="quick-stat-item">
+            <span class="quick-stat-label">Pending Approvals</span>
+            <span class="quick-stat-value warning">23</span>
+          </div>
+          <div class="quick-stat-item">
+            <span class="quick-stat-label">Active Sessions</span>
+            <span class="quick-stat-value">156</span>
+          </div>
+          <div class="quick-stat-item">
+            <span class="quick-stat-label">Support Tickets</span>
+            <span class="quick-stat-value danger">8</span>
+          </div>
+          <div class="quick-stat-item">
+            <span class="quick-stat-label">System Health</span>
+            <span class="quick-stat-value success">Good</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+
+

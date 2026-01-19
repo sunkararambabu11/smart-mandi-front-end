@@ -1,0 +1,248 @@
+.reports-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+    gap: 1rem;
+  }
+}
+
+// Page Header
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  .header-content {
+    .page-title {
+      font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--smc-text-primary);
+      margin: 0;
+    }
+
+    .page-subtitle {
+      font-size: 0.875rem;
+      color: var(--smc-text-secondary);
+      margin: 0.25rem 0 0;
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .period-select {
+      width: 150px;
+
+      ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+      }
+    }
+  }
+}
+
+// Metrics Grid
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.metric-card {
+  border-radius: 1rem !important;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--smc-shadow-lg);
+  }
+
+  mat-card-content {
+    padding: 1.25rem !important;
+  }
+
+  .metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .metric-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+      background: linear-gradient(135deg, var(--smc-primary), var(--smc-primary-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      mat-icon {
+        color: white;
+      }
+    }
+
+    .metric-change {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+
+      mat-icon {
+        font-size: 0.875rem;
+        width: 0.875rem;
+        height: 0.875rem;
+      }
+
+      &.positive {
+        background: #dcfce7;
+        color: #16a34a;
+      }
+
+      &.negative {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+    }
+  }
+
+  .metric-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--smc-text-primary);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .metric-title {
+    font-size: 0.875rem;
+    color: var(--smc-text-secondary);
+  }
+}
+
+// Charts Grid
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  border-radius: 1rem !important;
+
+  mat-card-header {
+    padding: 1rem 1.5rem 0;
+  }
+
+  mat-card-content {
+    padding: 1rem 1.5rem 1.5rem !important;
+  }
+
+  .chart-placeholder {
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--smc-bg-tertiary);
+    border-radius: 0.75rem;
+    color: var(--smc-text-muted);
+
+    mat-icon {
+      font-size: 3rem;
+      width: 3rem;
+      height: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// Top Products
+.top-products-card {
+  border-radius: 1rem !important;
+
+  mat-card-header {
+    padding: 1rem 1.5rem 0;
+  }
+
+  mat-card-content {
+    padding: 1rem 1.5rem 1.5rem !important;
+  }
+
+  .products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .product-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: var(--smc-bg-tertiary);
+    }
+
+    .product-rank {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: var(--smc-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .product-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      .product-name {
+        font-weight: 500;
+        color: var(--smc-text-primary);
+      }
+
+      .product-sales {
+        font-size: 0.75rem;
+        color: var(--smc-text-secondary);
+      }
+    }
+
+    .product-revenue {
+      font-weight: 600;
+      color: var(--smc-primary);
+    }
+  }
+}
+
+
+

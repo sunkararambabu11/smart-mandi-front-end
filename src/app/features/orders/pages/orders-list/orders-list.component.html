@@ -1,0 +1,146 @@
+<!-- Orders List Page -->
+<div class="orders-page">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1>{{ isFarmerView() ? 'My Orders' : 'My Orders' }}</h1>
+        <p class="subtitle">
+          {{ isFarmerView() ? 'Manage orders from buyers' : 'Track your purchases' }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <mat-icon>shopping_bag</mat-icon>
+        <div class="stat-info">
+          <span class="stat-value">{{ orderStats().total }}</span>
+          <span class="stat-label">Total Orders</span>
+        </div>
+      </div>
+      <div class="stat-card active">
+        <mat-icon>local_shipping</mat-icon>
+        <div class="stat-info">
+          <span class="stat-value">{{ orderStats().active }}</span>
+          <span class="stat-label">Active</span>
+        </div>
+      </div>
+      <div class="stat-card completed">
+        <mat-icon>check_circle</mat-icon>
+        <div class="stat-info">
+          <span class="stat-value">{{ orderStats().completed }}</span>
+          <span class="stat-label">Completed</span>
+        </div>
+      </div>
+      @if (isFarmerView()) {
+        <div class="stat-card revenue">
+          <mat-icon>account_balance_wallet</mat-icon>
+          <div class="stat-info">
+            <span class="stat-value">₹{{ orderStats().totalRevenue | number:'1.0-0' }}</span>
+            <span class="stat-label">Revenue</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+      @for (option of filterOptions; track option.value) {
+        <button
+          class="filter-tab"
+          [class.active]="filterStatus() === option.value"
+          (click)="onFilterChange(option.value)"
+        >
+          <mat-icon>{{ option.icon }}</mat-icon>
+          <span>{{ option.label }}</span>
+          @if (option.value === 'active' && orderStats().active > 0) {
+            <span class="badge">{{ orderStats().active }}</span>
+          }
+        </button>
+      }
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="orders-content">
+    @if (isLoading()) {
+      <!-- Loading State -->
+      <div class="loading-container">
+        <mat-spinner diameter="48"></mat-spinner>
+        <p>Loading orders...</p>
+      </div>
+    } @else if (error()) {
+      <!-- Error State -->
+      <div class="error-container">
+        <mat-icon>error_outline</mat-icon>
+        <h3>Something went wrong</h3>
+        <p>{{ error() }}</p>
+        <button mat-flat-button color="primary" (click)="retryLoadOrders()">
+          <mat-icon>refresh</mat-icon>
+          Try Again
+        </button>
+      </div>
+    } @else if (filteredOrders().length === 0) {
+      <!-- Empty State -->
+      <div class="empty-state">
+        @switch (filterStatus()) {
+          @case ('active') {
+            <mat-icon>local_shipping</mat-icon>
+            <h3>No active orders</h3>
+            <p>Orders in progress will appear here</p>
+          }
+          @case ('completed') {
+            <mat-icon>check_circle</mat-icon>
+            <h3>No completed orders</h3>
+            <p>Your delivered orders will appear here</p>
+          }
+          @case ('cancelled') {
+            <mat-icon>cancel</mat-icon>
+            <h3>No cancelled orders</h3>
+            <p>Cancelled orders will appear here</p>
+          }
+          @default {
+            <mat-icon>shopping_bag</mat-icon>
+            <h3>No orders yet</h3>
+            @if (isFarmerView()) {
+              <p>When buyers place orders on your crops, they'll appear here</p>
+            } @else {
+              <p>Start shopping in the marketplace to place your first order</p>
+              <button mat-flat-button color="primary" routerLink="/marketplace">
+                <mat-icon>storefront</mat-icon>
+                Browse Marketplace
+              </button>
+            }
+          }
+        }
+      </div>
+    } @else {
+      <!-- Orders List -->
+      <div class="orders-list">
+        @for (order of filteredOrders(); track trackByOrderId($index, order)) {
+          <smc-order-card
+            [order]="order"
+            [isFarmerView]="isFarmerView()"
+            (viewDetails)="onViewDetails($event)"
+            (updateStatus)="onUpdateStatus($event)"
+            (cancelOrder)="onCancelOrder($event)"
+            (contactParty)="onContactParty($event)"
+            (trackOrder)="onTrackOrder($event)"
+          />
+        }
+      </div>
+    }
+  </main>
+
+  <!-- Processing Overlay -->
+  @if (isUpdating()) {
+    <div class="processing-overlay">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Updating order...</p>
+    </div>
+  }
+</div>
+
+
