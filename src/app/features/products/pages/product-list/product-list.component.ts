@@ -409,9 +409,13 @@ export class ProductListComponent implements OnInit {
     console.log('[onEditProduct] Product object to set:', productToEdit);
     console.log('[onEditProduct] Product ID in object:', productToEdit.id);
     console.log('[onEditProduct] Product object has id property:', 'id' in productToEdit);
+    console.log('[onEditProduct] Current selectedProductForEdit:', this.selectedProductForEdit());
     console.log('[onEditProduct] ============================================');
     
-    this.selectedProductForEdit.set(productToEdit);
+    // Create a new object reference to ensure Angular's change detection triggers
+    // This ensures the panel opens even if clicking the same product again
+    const newProductRef: Product = { ...productToEdit };
+    this.selectedProductForEdit.set(newProductRef);
   }
 
   onProductUpdated(): void {
