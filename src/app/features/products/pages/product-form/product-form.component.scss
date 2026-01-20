@@ -290,6 +290,56 @@
     height: 100%;
     object-fit: cover;
   }
+
+  &.uploading {
+    border-color: var(--smc-primary);
+    
+    img {
+      opacity: 0.5;
+    }
+  }
+
+  &.error {
+    border-color: #ef5350;
+    
+    img {
+      opacity: 0.5;
+    }
+  }
+}
+
+.upload-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.error-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 83, 80, 0.1);
+  gap: 0.25rem;
+  
+  mat-icon {
+    color: #ef5350;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+  }
+  
+  span {
+    font-size: 0.625rem;
+    color: #ef5350;
+    text-align: center;
+    padding: 0 0.25rem;
+  }
 }
 
 .main-badge {

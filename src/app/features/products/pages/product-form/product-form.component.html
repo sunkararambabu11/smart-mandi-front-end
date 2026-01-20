@@ -309,16 +309,28 @@
             <!-- Uploaded Images -->
             @if (uploadedImages().length > 0) {
               <div class="uploaded-images">
-                @for (img of uploadedImages(); track img; let i = $index) {
-                  <div class="image-preview">
-                    <img [src]="img" alt="Product image {{ i + 1 }}" />
-                    @if (i === 0) {
+                @for (img of uploadedImages(); track img.publicId; let i = $index) {
+                  <div class="image-preview" [class.uploading]="img.isUploading" [class.error]="img.error">
+                    <img [src]="img.url" alt="Product image {{ i + 1 }}" />
+                    @if (i === 0 && !img.isUploading && !img.error) {
                       <span class="main-badge">Main</span>
+                    }
+                    @if (img.isUploading) {
+                      <div class="upload-overlay">
+                        <mat-progress-spinner mode="indeterminate" diameter="32"></mat-progress-spinner>
+                      </div>
+                    }
+                    @if (img.error) {
+                      <div class="error-overlay">
+                        <mat-icon>error</mat-icon>
+                        <span>{{ img.error }}</span>
+                      </div>
                     }
                     <button 
                       type="button"
                       class="remove-btn" 
                       (click)="removeImage(i)"
+                      [disabled]="img.isUploading"
                       aria-label="Remove image">
                       <mat-icon>close</mat-icon>
                     </button>
@@ -360,7 +372,7 @@
         mat-stroked-button 
         type="button" 
         (click)="onSubmit(true)"
-        [disabled]="isSaving()">
+        [disabled]="isSaving() || isUploading()">
         <mat-icon>save</mat-icon>
         Save as Draft
       </button>
@@ -369,13 +381,16 @@
         color="primary"
         type="submit"
         (click)="onSubmit()"
-        [disabled]="isSaving()">
+        [disabled]="isSaving() || isUploading()">
         @if (isSaving()) {
           <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+        } @else if (isUploading()) {
+          <mat-progress-spinner mode="indeterminate" diameter="20"></mat-progress-spinner>
+          Uploading...
         } @else {
           <mat-icon>publish</mat-icon>
+          {{ isEditMode() ? 'Update Product' : 'Publish Product' }}
         }
-        {{ isEditMode() ? 'Update Product' : 'Publish Product' }}
       </button>
     </div>
   }

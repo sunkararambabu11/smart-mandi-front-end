@@ -142,10 +142,15 @@
                 <mat-icon>visibility</mat-icon>
                 View
               </a>
-              <a [routerLink]="['/products', product.id, 'edit']" mat-stroked-button color="primary">
+              <button 
+                mat-stroked-button 
+                color="primary" 
+                (click)="onEditProduct(product)"
+                [disabled]="!product || !product.id || product.id === 'undefined' || product.id === 'null'"
+                [title]="(!product || !product.id) ? 'Product ID is missing' : ''">
                 <mat-icon>edit</mat-icon>
                 Edit
-              </a>
+              </button>
               <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="More actions">
                 <mat-icon>more_vert</mat-icon>
               </button>
@@ -172,5 +177,11 @@
       </div>
     }
   </mat-card>
+
+  <!-- Edit Off-Canvas -->
+  <smc-product-edit-offcanvas 
+    [product]="selectedProductForEdit()"
+    (productUpdated)="onProductUpdated()"
+    (panelClosed)="selectedProductForEdit.set(null)" />
 </div>
 
