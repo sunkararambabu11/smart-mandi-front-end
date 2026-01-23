@@ -159,19 +159,6 @@ import { environment } from '@environments/environment';
                 <mat-error>Valid 6-digit pincode is required</mat-error>
               }
             </mat-form-field>
-
-            <!-- Status -->
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Status</mat-label>
-              <mat-select formControlName="status">
-                @for (status of statusOptions; track status.value) {
-                  <mat-option [value]="status.value">{{ status.label }}</mat-option>
-                }
-              </mat-select>
-              @if (editForm.get('status')?.invalid && editForm.get('status')?.touched) {
-                <mat-error>Status is required</mat-error>
-              }
-            </mat-form-field>
           </form>
         }
       </div>
@@ -386,13 +373,6 @@ export class ProductEditOffcanvasComponent {
     { value: 'DL', label: 'Delhi' },
   ];
 
-  readonly statusOptions = [
-    { value: 'active', label: 'Active' },
-    { value: 'draft', label: 'Draft' },
-    { value: 'sold', label: 'Sold' },
-    { value: 'expired', label: 'Expired' },
-  ];
-
   readonly editForm: FormGroup = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
     category: ['', Validators.required],
@@ -400,7 +380,6 @@ export class ProductEditOffcanvasComponent {
     price: [null, [Validators.required, Validators.min(1)]],
     quantity: [null, [Validators.required, Validators.min(1)]],
     unit: ['kg', Validators.required],
-    status: ['active', Validators.required],
     harvestDate: [null],
     district: ['', Validators.required],
     state: ['', Validators.required],
@@ -587,16 +566,6 @@ export class ProductEditOffcanvasComponent {
         const stateInfo = this.states.find(s => s.label === stateName);
         const stateCode = stateInfo?.value || '';
 
-        // Map API status to form status
-        const statusMap: Record<string, 'active' | 'draft' | 'sold' | 'expired'> = {
-          'AVAILABLE': 'active',
-          'DRAFT': 'draft',
-          'SOLD': 'sold',
-          'EXPIRED': 'expired',
-        };
-        const apiStatus = productData.status || 'AVAILABLE';
-        const formStatus = statusMap[apiStatus] || 'active';
-
         // Format harvest date
         let harvestDate: Date | null = null;
         if (productData.harvestDate) {
@@ -611,7 +580,6 @@ export class ProductEditOffcanvasComponent {
           price: productData.pricePerKg || productData.price || null,
           quantity: productData.quantity || null,
           unit: (productData.unit || 'kg').toLowerCase(),
-          status: formStatus,
           harvestDate: harvestDate,
           district: productData.location?.district || '',
           state: stateCode,
@@ -656,15 +624,6 @@ export class ProductEditOffcanvasComponent {
     const stateInfo = this.states.find(s => s.value === formValue.state);
     const stateName = stateInfo?.label || formValue.state;
 
-    // Map form status to API status
-    const statusMap: Record<string, string> = {
-      'active': 'AVAILABLE',
-      'draft': 'DRAFT',
-      'sold': 'SOLD',
-      'expired': 'EXPIRED',
-    };
-    const apiStatus = statusMap[formValue.status] || 'AVAILABLE';
-
     // Format harvest date as YYYY-MM-DD
     let harvestDate: string | undefined;
     if (formValue.harvestDate) {
@@ -680,7 +639,6 @@ export class ProductEditOffcanvasComponent {
       quantity: formValue.quantity,
       unit: formValue.unit.toUpperCase(),
       description: formValue.description.trim(),
-      status: apiStatus,
       location: {
         state: stateName,
         district: formValue.district.trim(),
